@@ -20,8 +20,20 @@ module.exports = (err, req, res, next) => {
         }
 
         if (err.name === "CastError") {
-            message = `Resource not found: ${err.path}`;
+            let message = `Resource not found: ${err.path}`;
             error = new Error(message);
+        }
+        if(err.code == 11000){
+            let message = `Duplicate ${Object.keys(err.keyValue)} error`
+            error = new Error(message)
+        }
+        if(err.name == 'JSONWebTokenError'){
+            let message = `JSON web token is invalid. Try agin`
+            error = new Error(message)
+        }
+        if(err.name == 'TokenExpiredError'){
+            let message = `JSON web token is expired`
+            error = new Error(message)
         }
 
         res.status(err.statusCode).json({

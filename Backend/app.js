@@ -4,6 +4,7 @@ const dotenv=require('dotenv')
 const path=require('path')
 const cors = require('cors')
 const bodyParser=require('body-parser')
+const cookieParser = require('cookie-parser')
 const errorMiddleware = require('./middlewares/error')
 const connectDatabase=require('./config/connectDatabase')
 dotenv.config({path:path.join(__dirname,'config','config.env')})
@@ -11,15 +12,16 @@ dotenv.config({path:path.join(__dirname,'config','config.env')})
 
 const products=require('./Routes/product');
 const auth = require('./Routes/auth')
-//const orders=require('./Routes/order');
+const orders=require('./Routes/order');
 
 connectDatabase()
 app.use(express.json())
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors())
 app.use('/api/v1/',products);
 app.use('/api/v1/',auth);
-//app.use('/api/v1/',orders);
+app.use('/api/v1/',orders);
 app.use(errorMiddleware)
 
 const server = app.listen(process.env.PORT,()=>{

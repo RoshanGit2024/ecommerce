@@ -1,0 +1,24 @@
+{
+    "orderItems":[
+        {
+            "product":"66473f0aa2774cd42b29fd6b",
+            "name":"prod name",
+            "price":875,
+            "image":"image",
+            "quantity":1
+        }
+    ],
+    "itemPrice":2.67,
+    "taxPrice":0.14,
+    "shippingPrice":25,
+    "shippingInfo":{
+        "address":"343 dgdg",
+        "city":"chennai",
+        "postalCode":"24242",
+        "phoneNo":"8989989895"
+    },
+    "paymentInfo":{
+        "id":"pu_jddshdshdjshdshd",
+         "status":"success"
+}
+}
