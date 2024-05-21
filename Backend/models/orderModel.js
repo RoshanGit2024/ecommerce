@@ -1,4 +1,4 @@
-const mongoose=require('mongoose')
+{/*const mongoose=require('mongoose')
 
 const orderSchema = new mongoose.Schema({
     cartItems:Array,
@@ -9,4 +9,4 @@ const orderSchema = new mongoose.Schema({
 
 const orderModel = mongoose.model('order',orderSchema)
 
-module.exports=orderModel;
+module.exports=orderModel;*/}

@@ -6,13 +6,10 @@
         "ratings": 4.5,
         "images": [
             {
-                "image": "/images/products/1.jpg"
-            },
-            {
-                "image": "/images/products/1.jpg"
+                "image": "product_66767.jpg"
             }
         ],
-        "category": "Mobile Phones",
+        "category": "Mobile phones",
         "seller": "Amazon",
         "stock": 5,
         "numOfReviews": 15,
@@ -25,10 +22,7 @@
         "ratings": 3.5,
         "images": [
             {
-                "image": "/images/products/2.jpg"
-            },
-            {
-                "image": "/images/products/2.jpg"
+                "image": "prod_787872.jpg"
             }
         ],
         "category": "Accessories",
@@ -44,10 +38,7 @@
         "ratings": 2,
         "images": [
             {
-                "image": "/images/products/3.jpg"
-            },
-            {
-                "image": "/images/products/3.jpg"
+                "image": "prod_989893.jpg"
             }
         ],
         "category": "Laptops",
@@ -63,73 +54,13 @@
         "ratings": 4,
         "images": [
           {
-            "image": "/images/products/6.jpg"
-          },
-          {
-            "image": "/images/products/6.jpg"
+            "image": "prod_76766656.jpg"
           }
         ],
         "category": "Laptops",
         "seller": "Ebay",
         "stock": 9,
         "numOfReviews": 12,
-        "reviews": []
-      },
-      {
-        "name": "ASUS VivoBook 15 Laptop",
-        "price": 767.32,
-        "description": "ASUS VivoBook 15 15.6-inch (39.62 cm) HD, Dual Core Intel Celeron N4020, Thin and Light Laptop (4GB RAM/256GB SSD/Integrated Graphics/Windows 11 Home/Transparent Silver/1.8 Kg), X515MA-BR011W",
-        "ratings": 5,
-        "images": [
-          {
-            "image": "/images/products/7.jpg"
-          },
-          {
-            "image": "/images/products/7.jpg"
-          }
-        ],
-        "category": "Laptops",
-        "seller": "Ebay",
-        "stock": 9,
-        "numOfReviews": 12,
-        "reviews": []
-    },
-    {
-        "name": "PTron Newly Launched Tangent Sports, 60Hrs Playtime",
-        "price": 15.46,
-        "description": "Gigantic 60 + Hours of music playtime on a single charge; BT5.2 Wireless headphones with ENC (Environmental Noise Cancellation) Technology to enhance your voice quality over the voice calls",
-        "ratings": 5,
-        "images": [
-            {
-                "image": "/images/products/4.jpg"
-            },
-            {
-                "image": "/images/products/4.jpg"
-            }
-        ],
-        "category": "Headphones",
-        "seller": "Amazon",
-        "stock": 4,
-        "numOfReviews": 20,
-        "reviews": []
-    },
-    {
-        "name": "Campus Men's Maxico Running Shoes",
-        "price": 10.12,
-        "description": "The high raised back cover with extra padding.",
-        "ratings": 3,
-        "images": [
-            {
-                "image": "/images/products/5.jpg"
-            },
-            {
-                "image": "/images/products/5.jpg"
-            }
-        ],
-        "category": "Sports",
-        "seller": "Ebay",
-        "stock": 6,
-        "numOfReviews": 9,
         "reviews": []
     }
 ]
