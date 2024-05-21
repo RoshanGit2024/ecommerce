@@ -10,6 +10,7 @@ dotenv.config({path:path.join(__dirname,'config','config.env')})
 
 
 const products=require('./Routes/product');
+const auth = require('./Routes/auth')
 //const orders=require('./Routes/order');
 
 connectDatabase()
@@ -17,6 +18,7 @@ app.use(express.json())
 app.use(bodyParser.json())
 app.use(cors())
 app.use('/api/v1/',products);
+app.use('/api/v1/',auth);
 //app.use('/api/v1/',orders);
 app.use(errorMiddleware)
 
