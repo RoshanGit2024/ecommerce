@@ -19,7 +19,7 @@ const ProductCard = ({ product }) => {
             <Link to={`/product/${product._id}`} href="">{product.name}</Link>
           </h5>
           <p className="card-text">{product.price}</p>
-          <Link to={`/product/${product._id}`} id="view_btn" className="btn btn-block">View Details</Link>
+          <Link to={`/product/${product._id}`} id="view_btn" className="btn btn-block">View Detail</Link>
         </div>
       </div>
     </div>
