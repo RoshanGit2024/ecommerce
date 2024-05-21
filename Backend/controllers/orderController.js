@@ -35,36 +35,66 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     })
 
     exports.getSigleOrder = catchAsyncError(async(req,res,next)=>{
-        
+        const order = await orderModel.findById(req.params.id).populate('user','name email')
+        if(!order){
+          return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
+        }
+        res.status(200).json({
+          success:true,
+          order
+        })
     })
     
 
+    exports.myOrders = catchAsyncError(async(req,res,next)=>{
+      const orders = await orderModel.find({user: req.user.id})
+
+      res.status(200).json({
+        success:true,
+        orders
+      })
+  })
+
+  //Admin: Get All orders - api/v1/orders
+   exports.orders = catchAsyncError(async(req,res,next)=>{
+    const orders = await orderModel.find()
+
+    let totalAmount = 0;
+    orders.forEach(order =>{
+      totalAmount += order.totalPrice
+    })
+
+    res.status(200).json({
+      success:true,
+      totalAmount,
+      orders
+    })
+})
+
    //updating product stock
-   async function updateProductStock(cartItems) {
-      try {
-          for (const item of cartItems) {
-              const product = await productModel.findById(item.product._id);
-              if (product) {
-                  product.stock -= item.qty;
-                  await product.save();
-                  console.log(`Stock updated for product ${product.name}`);
-              } else {
-                  console.log(`Product with ID ${item.product._id} not found`);
-              }
-          }
-      } catch (error) {
-          console.error('Error updating product stock:', error);
-          throw error; // Rethrow the error to handle it higher up the call stack if needed
-      }
-  updateProductStock(cartItems)
-    .then(() => console.log('Stock update completed'))
-    .catch((error) => console.error('Stock update failed:', error));
-  
+   exports.UpdateOrder = catchAsyncError(async(req,res,next)=>{
+    const order = await orderModel.findById(req.params.id);
 
-   const order=await orderModel.create({cartItems,amount,status})
-   res.json({
-    success:true,
-    order
+    if(order.orderStatus == 'Delivered'){
+       return next(new ErrorHandler('order has been already delivered',400))
+    }
+
+    //updating the product stock of each  order item
+    order.OrderItems.forEach(async orderItem =>{
+      await updateStock(orderItem.product,orderItem.quantity)
+    })
+
+    order.orderStatus = req.body.orderStatus;
+    order.deliveredAt=Date.now()
+    await order.save()
+
+    res.status(200).json({
+      success:true
+    })
    })
-}
 
+   async function updateStock(productID,quantity){
+    const product = await productModel.findById(productId);
+    product.stock = product.stock - quantity;
+    product.save({validateBeforeSave:false})
+   }
