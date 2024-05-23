@@ -4,7 +4,12 @@ const ErrorHandler = require('../utils/errorhandler')
 const sendToken = require('../utils/jwt')
 
 exports.registerUser = catchAsyncError(async(req,res,next)=>{
-   const{name,email,password,avatar}= req.body
+   const{name,email,password}= req.body
+
+   let avatar;
+   if(req.file){
+      avatar = `${req.protocol}://${req.host}/uploads/user/${req.file.originalname}`
+   }
    const user =await User.create({
     name,
     email,

@@ -104,7 +104,7 @@ function Cart({cartItems,setcartitems}) {
                     <p>Est. total: <span class="order-summary-values">${Number(cartItems.reduce((acc,item)=>(acc+item.product.price*item.qty),0)).toFixed(2)}</span></p>
     
                     <hr />
-                    <button id="checkout_btn" class="btn btn-primary btn-block" onClick={placeOrderHandling}>Place Order</button>
+                    <button id="checkout_btn" class="btn btn-primary btn-block" >Place Order</button>
                 </div>
             </div>
         </div>

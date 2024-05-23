@@ -6,7 +6,7 @@ const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticat
 
   
   //const upload = multer({ storage: storage });
-router.route('/products').get(isAuthenticateUser,getProducts)
+router.route('/products').get(getProducts)
 router.route('/products/new').post(isAuthenticateUser, authorizeRoles('admin'), postProducts)
 router.route('/products/:id').get(getSingleProducts)
                              .put(updateProduct)

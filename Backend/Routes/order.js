@@ -1,5 +1,5 @@
 const express=require('express');
-const { createOrder,getSigleOrder,myOrders,orders,UpdateOrder} = require('../controllers/orderController');
+const { createOrder,getSigleOrder,myOrders,orders,UpdateOrder,deleteOrder} = require('../controllers/orderController');
 const router=express.Router();
 const {isAuthenticateUser,authorizeRoles}=require('../middlewares/authenticate')
 
@@ -10,6 +10,7 @@ router.route('/myorders').get(isAuthenticateUser, myOrders)
 //Admin routes
 router.route('/orders').get(isAuthenticateUser,authorizeRoles('admin'),orders)
 router.route('/order/:id').put(isAuthenticateUser,authorizeRoles('admin'),UpdateOrder)
+                          .delete(isAuthenticateUser,authorizeRoles('admin'),deleteOrder)
 
 
 module.exports=router

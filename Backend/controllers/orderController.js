@@ -1,6 +1,7 @@
 const orderModel=require('../models/orderModel')
 const productModel=require('../models/productmodel')
-const catchAsyncError = require('../middlewares/catchAsyncError')
+const catchAsyncError = require('../middlewares/catchAsyncError');
+const ErrorHandler = require('../utils/errorHandler')
 
 //create order - /api/v1/order
 exports.createOrder=catchAsyncError(async(req,res,next)=>{
@@ -75,7 +76,7 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
    exports.UpdateOrder = catchAsyncError(async(req,res,next)=>{
     const order = await orderModel.findById(req.params.id);
 
-    if(order.orderStatus == 'Delivered'){
+    if(order.orderStatus == 'delivered'){
        return next(new ErrorHandler('order has been already delivered',400))
     }
 
@@ -98,3 +99,18 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     product.stock = product.stock - quantity;
     product.save({validateBeforeSave:false})
    }
+
+   //Admin : Delete order - api/v1/order/:id
+
+   exports.deleteOrder = catchAsyncError(async(req,res,next)=>{
+    const order = await orderModel.findById(req.params.id);
+    if(!order){
+      return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
+    }
+
+    await orderModel.deleteOne({ _id: req.params.id });
+    res.status(200).json({
+      success:true,
+    })
+   })
+

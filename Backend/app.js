@@ -17,6 +17,7 @@ const orders=require('./Routes/order');
 connectDatabase()
 app.use(express.json())
 app.use(cookieParser())
+app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 app.use(bodyParser.json())
 app.use(cors())
 app.use('/api/v1/',products);

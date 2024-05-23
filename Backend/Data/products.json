@@ -6,7 +6,10 @@
         "ratings": 4.5,
         "images": [
             {
-                "image": "product_66767.jpg"
+                "image": "/images/products/1.jpg"
+            },
+            {
+                "image": "/images/products/1.jpg"
             }
         ],
         "category": "Mobile phones",
@@ -22,7 +25,10 @@
         "ratings": 3.5,
         "images": [
             {
-                "image": "prod_787872.jpg"
+                "image": "/images/products/2.jpg"
+            },
+            {
+                "image": "/images/products/2.jpg"
             }
         ],
         "category": "Accessories",
@@ -38,7 +44,10 @@
         "ratings": 2,
         "images": [
             {
-                "image": "prod_989893.jpg"
+                "image": "/images/products/3.jpg"
+            },
+            {
+                "image": "/images/products/3.jpg"
             }
         ],
         "category": "Laptops",
@@ -53,9 +62,12 @@
         "description": "Lenovo IdeaPad Slim 311th Gen Intel Core i5-1135G7 | Speed: 2.4 GHz (Base) - 4.2 GHz (Max) | 4 Cores | 8 Threads | 8 MB Cache",
         "ratings": 4,
         "images": [
-          {
-            "image": "prod_76766656.jpg"
-          }
+            {
+                "image": "/images/products/7.jpg"
+            },
+            {
+                "image": "/images/products/7.jpg"
+            }
         ],
         "category": "Laptops",
         "seller": "Ebay",

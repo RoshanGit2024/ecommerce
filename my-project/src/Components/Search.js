@@ -1,30 +1,46 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Search() {
-    const[keyword,setkeyword]=useState("")
-    const navigate = useNavigate()
+    const [keyword, setKeyword] = useState("");
+    const navigate = useNavigate();
+    const location = useLocation()
 
-    const handleSearch=()=>{
-         navigate('/search?keyword='+keyword)
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (keyword.trim()) {
+            navigate(`/search/${keyword}`);
+        } else {
+            navigate('/');
+        }
+    };
+
+    const clearKeyword=()=>{
+      setKeyword("")
     }
-  return (
-        <div className="input-group">
+
+    useEffect(()=>{
+      if(location.pathname == '/'){
+        clearKeyword()
+      }
+    },[location])
+
+    return (
+        <form onSubmit={handleSearch} className="input-group">
             <input
-              type="text"
-              id="search_field"
-              onChange={(e)=>setkeyword(e.target.value)}
-              onBlur={handleSearch}
-              class="form-control"
-              placeholder="Enter Product Name ..."
+                type="text"
+                id="search_field"
+                onChange={(e) => setKeyword(e.target.value)}
+                className="form-control"
+                placeholder="Enter Product Name ..."
             />
             <div className="input-group-append">
-              <button onClick={handleSearch} id="search_btn" className="btn">
-                <i className="fa fa-search" aria-hidden="true"></i>
-              </button>
+                <button type="submit" id="search_btn" className="btn">
+                    <i className="fa fa-search" aria-hidden="true"></i>
+                </button>
             </div>
-          </div>
-  )
+        </form>
+    );
 }
 
-export default Search
+export default Search;

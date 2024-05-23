@@ -20,7 +20,8 @@ exports.getProducts=async(req,res,next)=>{
     }
    const products= await productModel.find(query).find(categoryCondition);
    
-
+    //await new Promise(resolve => setTimeout(resolve,3000))
+    //return next(new ErrorHandler('Unable to send products',400))
     res.json({
         success:'true',
         count:products.length,
@@ -30,7 +31,7 @@ exports.getProducts=async(req,res,next)=>{
 
 //get single products API = api/v1/products/:id
 exports.getSingleProducts=async(req,res,next)=>{
-        console.log(req.params.id,'ID')
+        console.log(req.params.id)
         const product=await productModel.findById(req.params.id)
         
         if(!product){
