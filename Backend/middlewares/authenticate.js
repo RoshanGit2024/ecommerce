@@ -4,16 +4,21 @@ const catchAsyncError = require("./catchAsyncError");
 const jwt = require('jsonwebtoken')
 
 exports.isAuthenticateUser = catchAsyncError(async(req,res,next)=>{
-    const {token} = req.cookies;
+    const { token } = req.cookies;
 
-
-    if(!token){
-        return next(new ErrorHandler('Login first to handle the resources',401))
+    if (!token) {
+      return res.status(401).json({ message: "Please login to access this resource" });
     }
-    const decoded = jwt.verify(token,process.env.JWT_SECRET)
-    req.user =await User.findById(decoded.id)
+  
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id);
+  
+    if (!req.user) {
+      return res.status(401).json({ message: "User not found. Please login again." });
+    }
+  
     next();
-})
+    })
 
 exports.authorizeRoles = (...roles)=>{
    return (req,res,next)=>{

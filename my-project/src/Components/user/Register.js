@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,Fragment} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { register } from '../../actions/userActions'
 import { clearError } from '../../slices/authSlice'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import MetaData from '../MetaData'
 
 function Register() {
     const[userData,setuserData]=useState({
@@ -45,8 +46,7 @@ function Register() {
 
     useEffect(()=>{
         if(isAuthenticated){
-            navigate('/')
-            return
+            navigate('/login')
         }
         if (error) {
             toast(error,{
@@ -55,8 +55,10 @@ function Register() {
             });
             return
           }
-    },[])
+    },[isAuthenticated, error, navigate, dispatch])
     return (
+        <Fragment>
+            <MetaData title={'Register'}/>
         <div className="row wrapper">
             <div className="col-10 col-lg-5">
                 <form onSubmit={handleSubmit} className="shadow-lg" encType='multipart/form-data'>
@@ -100,6 +102,7 @@ function Register() {
                 </form>
             </div>
         </div>
+        </Fragment>
     )
 }
 

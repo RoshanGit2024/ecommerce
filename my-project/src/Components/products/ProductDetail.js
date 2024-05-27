@@ -8,6 +8,7 @@ import { Carousel, carousel } from 'react-bootstrap'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MetaData from '../MetaData'
+import { addcartItems } from '../../actions/cartActions'
 
 
 function ProductDetail({ cartItems, setcartitems }) {
@@ -33,7 +34,7 @@ function ProductDetail({ cartItems, setcartitems }) {
     function increaseQty() {
         if (product.stock == qty) {
             return;
-        }
+        }if(product.stock == 0) return;
         setQty((state) => state + 1)
     }
 
@@ -82,7 +83,9 @@ function ProductDetail({ cartItems, setcartitems }) {
                                 </div>
                                 <button type="button"
                                     id="cart_btn"
-                                    className="btn btn-primary d-inline ml-4" onClick={handleCart}>Add to Cart</button>
+                                    className="btn btn-primary d-inline ml-4"
+                                    disabled={product.stock ==0 ? true : false}
+                                     onClick={()=>dispatch(addcartItems(product._id,qty))}>Add to Cart</button>
 
                                 <hr />
 

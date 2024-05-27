@@ -52,6 +52,84 @@ const authSlice = createSlice({
                 loading: false,
                 error: action.payload
             }
+        },
+        loadUserRequest(state, action) {
+            return {
+                ...state,
+                isAuthenticated:false,
+                loading:true
+            }
+        },
+        loadUserSuccess(state, action) {
+            return {
+                loading: false,
+                isAuthenticated:true,
+                user:action.payload.user
+            }
+        },
+        loadUserFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        },
+        logoutSuccess(state, action) {
+            return {
+                loading: false,
+                isAuthenticated:false,
+                resmessage:"success"
+            }
+        },
+        logoutFail(state, action) {
+            return {
+                ...state,
+                error: action.payload,
+                resmessage:'fail'
+            }
+        },
+        updateProfileRequest(state, action) {
+            return {
+                ...state,
+                loading:true,
+                isUpdated:false
+            }
+        },
+        updateProfileSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                user:action.payload.user,
+                isUpdated:true
+            }
+        },
+        updateProfileFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        },
+        updatePasswordRequest(state, action) {
+            return {
+                ...state,
+                loading:true,
+                isUpdated:false
+            }
+        },
+        updatePasswordSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                isUpdated:true
+            }
+        },
+        updatePasswordFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
         }
     }
 });
@@ -63,6 +141,17 @@ export const { loginRequest,
                clearError,
                registerRequest,
                registerSuccess,
-               registerFail} = actions
+               registerFail,
+               loadUserRequest,
+               loadUserSuccess,
+               loadUserFail,
+               logoutSuccess,
+               logoutFail,
+               updateProfileRequest,
+               updateProfileFail,
+               updateProfileSuccess,
+               updatePasswordRequest,
+               updatePasswordSuccess,
+               updatePasswordFail} = actions
 
 export default reducer

@@ -3,7 +3,7 @@ import MetaData from '../MetaData'
 import { clearAuthError, login } from '../../actions/userActions'
 import {useDispatch, useSelector} from 'react-redux'
 import {toast} from 'react-toastify'
-import {useNavigate,Link} from 'react-router-dom'
+import {useNavigate,Link, useLocation} from 'react-router-dom'
 
 
 function Login() {
@@ -11,7 +11,10 @@ function Login() {
     const [password, setPassword] = useState("")
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
     const {loading,error,isAuthenticated}=useSelector(state => state.authState)
+    const redirect = location.search?'/'+location.search.split('=')[1]:'/';
+   
 
     const handleSubmit =(e)=>{
         e.preventDefault();
@@ -20,7 +23,7 @@ function Login() {
 
     useEffect(() => {
         if(isAuthenticated){
-            navigate('/')
+            navigate(redirect)
         }
         if (error) {
           toast(error,{
@@ -31,8 +34,8 @@ function Login() {
         }
       }, [error,isAuthenticated,dispatch]);
     return (
-        <Fragment title={'Login'}>
-            <MetaData />
+        <Fragment  >
+            <MetaData title={'Login'} />
             <div className="row wrapper">
                 <div className="col-10 col-lg-5">
                     <form onSubmit={handleSubmit} className="shadow-lg">

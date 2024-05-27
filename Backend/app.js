@@ -14,15 +14,29 @@ const products=require('./Routes/product');
 const auth = require('./Routes/auth')
 const orders=require('./Routes/order');
 
-connectDatabase()
+  
+  
+  app.use(cookieParser())
+   connectDatabase()
+
 app.use(express.json())
-app.use(cookieParser())
 app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:3000', // Frontend URL
+    credentials: true,
+  }));
+  
 app.use('/api/v1/',products);
 app.use('/api/v1/',auth);
 app.use('/api/v1/',orders);
+
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, '../frontend/build')));
+    app.get('*', (req, res) =>{
+        res.sendFile(path.resolve(__dirname, '../frontend/build/index.html'))
+    })
+}
 app.use(errorMiddleware)
 
 const server = app.listen(process.env.PORT,()=>{
