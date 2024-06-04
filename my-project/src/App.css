@@ -521,7 +521,7 @@ footer {
 #sidebar {
   min-width: 100%;
   max-width: 100%;
-  background: #232f3e;
+  background: black;
   color: #fff;
   transition: all 0.3s;
 }
@@ -546,6 +546,11 @@ footer {
   text-decoration: none;
 }
 #sidebar ul li a:hover {
+  color:black;
+  background: #fff;
+}
+
+#sidebar ul li div.dropdown-menu a {
   color: #232f3e;
   background: #fff;
 }
@@ -634,6 +639,21 @@ ul.CTAs a {
 }
 
 .review_user {
-  font-size: 0.8rem;
-  color: grey;
+  font-size: 1rem;
+  color:black;
+}
+.profile-pic {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+.name-profle{
+  display: flex;
+}
+.review-time {
+  color: #888;
+  font-size: 0.9em;
+  margin-left: 5rem;
 }

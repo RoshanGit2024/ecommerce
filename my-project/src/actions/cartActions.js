@@ -1,8 +1,11 @@
-import axios from "axios"
-import { addCartItemRequest, addCartItemSuccess } from "../slices/cartSlice"
+//cartActions.js
+import {  addCartItemRequest, addCartItemSuccess } from "../slices/cartSlice"
 import { toast } from "react-toastify"
+import axios from "axios"
 
-export const addcartItems = (id,quantity)=>async(dispatch)=>{
+
+
+export const addcartItems = (userId,id,quantity)=>async(dispatch)=>{
     try{
         dispatch(addCartItemRequest)
         const{data} = await axios.get(`http://localhost:8000/api/v1/products/${id}`)
@@ -13,10 +16,9 @@ export const addcartItems = (id,quantity)=>async(dispatch)=>{
             image:data.product.images[0].image,
             price:data.product.price,
             stock: data.product.stock,
-            quantity
+            quantity,
+            userId
         }))
-        toast.success("your cart items added successfully..")
     }catch(error){
-        
     }
 }

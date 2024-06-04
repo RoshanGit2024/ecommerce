@@ -22,7 +22,7 @@ function Home() {
 
   return (
     <Fragment>
-      {loading ? (<Loader/>) : error ? (<Errorcomp message={error}/>):
+      {loading ? (<Loader/>) : error ? (<Errorcomp message={error.message}/>):
     <Fragment>
       <MetaData title={'Best products'} />
       <h1 id="products_heading">Latest Products</h1>

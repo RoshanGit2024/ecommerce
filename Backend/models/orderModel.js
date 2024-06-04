@@ -29,7 +29,7 @@ const orderSchema = new mongoose.Schema({
         required:true,
         ref:'user'
     },
-    OrderItems:[{
+    orderItems:[{
         name:{
             type:String,
             required:true
@@ -72,6 +72,16 @@ const orderSchema = new mongoose.Schema({
         type:Number,
         required:true,
         default:0.0
+    },
+    paymentInfo:{
+        id:{
+            type:String,
+            required:true
+        },
+        status:{
+            type:String,
+            required:true
+        }
     },
     paidAt:{
         type:Date

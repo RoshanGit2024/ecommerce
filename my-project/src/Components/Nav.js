@@ -6,6 +6,7 @@ import{useDispatch, useSelector} from 'react-redux'
 import {DropdownButton,Dropdown,Image} from 'react-bootstrap'
 import { logout } from '../actions/userActions';
 import { toast } from 'react-toastify';
+import Swal from 'sweetalert2'
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -13,8 +14,21 @@ function Nav() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const cart = isAuthenticated ? cartItems.filter((item) => item.userId === user._id) : [];
+
   const handleLogout=()=>{
-    dispatch(logout)
+    Swal.fire({
+      title: "Are you sure you want's to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ff0000",
+      cancelButtonColor: "#000000",
+      confirmButtonText: "yes,logout"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(logout)
+      }
+    });
   }
   return (
     <nav className="navbar row">
@@ -40,7 +54,9 @@ function Nav() {
               <span>{user.name}</span>
              </Dropdown.Toggle>
              <Dropdown.Menu>
+            {user.role === 'admin' && <Dropdown.Item className='text-dark' onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</Dropdown.Item>}
               <Dropdown.Item className='text-dark' onClick={()=>{navigate('/myprofile')}}>Profile</Dropdown.Item>
+              <Dropdown.Item className='text-dark' onClick={()=>{navigate('/orders')}}>orders</Dropdown.Item>
               <Dropdown.Item className='text-danger' onClick={handleLogout}>Logout</Dropdown.Item>
              </Dropdown.Menu>
          </Dropdown>
@@ -50,9 +66,9 @@ function Nav() {
     }
       <Link to={'/cart'}>
         <span id="cart" className="ml-3">
-          <FaShoppingCart /> Cart
+          <FaShoppingCart size={40}/> 
+        <span className="mt-1" id="cart_count">{cart.length}</span>
         </span>
-        <span className="ml-1" id="cart_count">{cartItems.length}</span>
       </Link>
     </div>
   </nav>

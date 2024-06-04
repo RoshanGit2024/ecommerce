@@ -6,10 +6,13 @@ import {decreaseCartItemQty,removeItemFromCart,increaseCartItemQty} from '../../
 
 function Cart() {
        const{items}=useSelector(state => state.cartState)
+       const {user,isAuthenticated} = useSelector((state) => state.authState)
        const[complete,setcomplete]=useState(false)
        const dispatch = useDispatch();
        const navigate = useNavigate();
    
+       const cartItems = isAuthenticated ? items.filter((item) => item.userId === user._id) : [];
+       const cartLength = cartItems.length;
        const increaseQty = (item) => {
            const count = item.quantity;
            if(item.stock ==0 ||  count >= item.stock) return;
@@ -24,16 +27,18 @@ function Cart() {
    const checkoutHandler=()=>{
       navigate('/login?rediret=shipping')
    }
+
+
       
   return (
     <Fragment>
-            {items.length==0 ? 
+            {cartItems.length==0 ? 
                 <h2 className="mt-5">Your Cart is Empty</h2> :
                 <Fragment>
-                     <h2 className="mt-5">Your Cart: <b>{items.length} items</b></h2>
+                     <h2 className="mt-5">Your Cart: <b>{cartLength} items</b></h2>
                     <div className="row d-flex justify-content-between">
                         <div className="col-12 col-lg-8">
-                            {items.map(item => (
+                            {cartItems.map(item => (
                                 <Fragment key={item.product}>
                                     <hr />
                                     <div className="cart-item">
@@ -67,6 +72,7 @@ function Cart() {
                                         </div>
                                     </div>
                                 </Fragment>
+                              
                                 )
                             )
                             }

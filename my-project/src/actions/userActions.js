@@ -102,6 +102,7 @@ export const updatePassword = (formData)=>async(dispatch)=>{
         }
         await axios.put('http://localhost:8000/api/v1/password/change',formData,config)
         dispatch(updatePasswordSuccess())
+        toast.success("password updated successfully")
     } catch (error) {
         dispatch(updatePasswordFail(error.response.data.message))
     }

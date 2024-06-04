@@ -6,18 +6,21 @@ import { useNavigate } from 'react-router-dom'
 import Steps from './Steps'
 import { toast } from 'react-toastify'
 
-export const validateShipping =(shippingInfo,navigate)=>{
-    if(!shippingInfo.address){
-        toast.error("please fill the shipping information")
-        navigate()
+
+
+export const validateShipping = (shippingInfo) => {
+    const { address, city, phoneNumber, postalCode, country, state } = shippingInfo;
+    if (!address || !city || !phoneNumber || !postalCode || !country || !state) {
+        return false; 
     }
-}
+    return true;
+}; 
 
 function Shipping() {
-    const{shippingInfo}=useSelector(state => state.cartState)
-    const[address,setAddress]=useState(shippingInfo.address)
+    const{shippingInfo={}}=useSelector(state => state.cartState)
+    const [address, setAddress] = useState(shippingInfo.address);
     const[city,setCity]=useState(shippingInfo.city)
-    const[phoneNo,setPhoneNo]=useState(shippingInfo.phoneNo);
+    const[phoneNumber,setPhoneNo]=useState(shippingInfo.phoneNumber);
     const[postalCode,setPostalCode]=useState(shippingInfo.postalCode)
     const[country,setCountry]=useState(shippingInfo.country)
     const[state,setState]=useState(shippingInfo.country)
@@ -27,8 +30,14 @@ function Shipping() {
 
     const handleSubmit=(e)=>{
         e.preventDefault()
-        dispatch(saveShippingInfo({address,city,phoneNo,postalCode,country,state}))
-        navigate('/order/confirm')
+        const shippingInfo = { address, city, phoneNumber, postalCode, country, state }
+        if (validateShipping(shippingInfo)) {
+            dispatch(saveShippingInfo(shippingInfo))
+            console.log(shippingInfo)
+            navigate('/order/confirm')
+        }else {
+            toast.error("please fill the shipping")
+        }
     }
 
   return (
@@ -59,11 +68,11 @@ function Shipping() {
                 </div>
 
                 <div className="form-group">
-                    <label htmlhtmlFor="phone_field">Phone No</label>
+                    <label htmlFor="phone_field">Phone No</label>
                     <input type="phone" 
                     id="phone_field" 
                     className="form-control"
-                    value={phoneNo} 
+                    value={phoneNumber} 
                     onChange={(e)=>setPhoneNo(e.target.value)} 
                      required />
                 </div>

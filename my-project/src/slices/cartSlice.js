@@ -1,4 +1,6 @@
+//cartSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -14,23 +16,19 @@ const cartSlice = createSlice({
                 loading: true,
             }
         },
-        addCartItemSuccess(state, action) {   
-            const item = action.payload
+        addCartItemSuccess(state, action) {
+            const item = action.payload;
+            const isItemExist = state.items.find(i => i.product === item.product);
 
-            const isItemExist = state.items.find(i => i.product == item.product)
-            if(isItemExist){
-                state = {
-                    ...state,
-                    loading: false,
-                }
-            }else{
-               state = {
-                  items:[...state.items,item],
-                  loading:false
-               }
-               localStorage.setItem('cartItems',JSON.stringify(state.items))
+            if (isItemExist) {
+                state.loading = false;
+                toast.warning("item exist")
+            } else {
+                state.items.push(item);
+                state.loading = false;
+                localStorage.setItem('cartItems', JSON.stringify(state.items));
+                toast.success("your cart items added successfully..")
             }
-            return state
         },
         increaseCartItemQty(state, action) {
             state.items = state.items.map(item => {
@@ -68,6 +66,16 @@ const cartSlice = createSlice({
                 ...state,
                 shippingInfo:action.payload
             }
+        },
+        orderCompleted(state,action){
+            localStorage.removeItem('shippingInfo');
+            localStorage.removeItem('cartItems');
+            localStorage.removeItem('orderInfo')
+            return{
+                items: [],
+                loading:false,
+                shippingInfo: {}
+            }
         }
     }
 });
@@ -78,7 +86,8 @@ export const { addCartItemRequest,
                decreaseCartItemQty,
                removeItemFromCart,
                increaseCartItemQty,
-               saveShippingInfo
+               saveShippingInfo,
+               orderCompleted,
             } = actions
 
 export default reducer

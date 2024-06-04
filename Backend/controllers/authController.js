@@ -74,6 +74,10 @@ exports.changePassword = catchAsyncError(async(req,res,next)=>{
    if (!isPasswordCorrect) {
       return next(new ErrorHandler('Old password is incorrect', 401));
   }
+   //compare the password
+  if(req.body.oldPassword === req.body.password){
+   return next(new ErrorHandler('new password cannot be same', 401));
+}
    //asigning new password 
    user.password = req.body.password;
    await user.save();

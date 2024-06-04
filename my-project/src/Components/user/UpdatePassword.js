@@ -20,7 +20,6 @@ function UpdatePassword() {
 
     useEffect(()=>{
         if(isUpdated){
-            toast.success("password updated successfully")
             setOldPassword("")
             setPassword("")
             return

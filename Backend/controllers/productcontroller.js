@@ -4,7 +4,7 @@ const catchAsyncError = require('../middlewares/catchAsyncError')
 const APIFeatures = require('../utils/apiFeatures')
 
 //get products API = api/v1/products
-exports.getProducts=async(req,res,next)=>{
+exports.getProducts=catchAsyncError(async(req,res,next)=>{
    const query=req.query.keyword?{ name:{
       $regex: req.query.keyword,
       $options:'i'
@@ -27,12 +27,12 @@ exports.getProducts=async(req,res,next)=>{
         count:products.length,
         products
     })
-}
+})
 
 //get single products API = api/v1/products/:id
-exports.getSingleProducts=async(req,res,next)=>{
+exports.getSingleProducts=catchAsyncError(async(req,res,next)=>{
         console.log(req.params.id)
-        const product=await productModel.findById(req.params.id)
+        const product=await productModel.findById(req.params.id).populate('reviews.user','name email avatar')
         
         if(!product){
             return next(new ErrorHandler('product not found',400));
@@ -42,19 +42,15 @@ exports.getSingleProducts=async(req,res,next)=>{
             success:true,
             product
         })
-    }
+    })
 
 //create product - /api/v1/products/new
 exports.postProducts=catchAsyncError(async(req,res,next)=>{
     let images = []
     let BASE_URL = process.env.BACKEND_URL;
-    if(process.env.NODE_ENV === "production"){
-        BASE_URL = `${req.protocol}://${req.get('host')}`
-    }
-    
     if(req.files.length > 0) {
         req.files.forEach( file => {
-            let url = `${BASE_URL}/uploads/product/${file.originalname}`;
+            let url = `${BASE_URL}/uploads/products/${file.originalname}`;
             images.push({ image: url })
         })
     }
@@ -109,3 +105,64 @@ exports.deleteProduct = async(req,res,next)=>{
     message:"product deleted"
    })
 }
+
+//create Review -api/v1/review
+exports.createReview = catchAsyncError(async(req,res,next)=>{
+    const {productId,rating,comment}=req.body;
+
+    const review = {
+        user:req.user.id,
+        rating,
+        comment
+    }
+    const product = await productModel.findById(productId);
+    //finding user already has reviewed
+    const isReviewed = product.reviews.find(review=>{
+        return review.user.toString() == req.user.id.toString()
+    })
+     //updating the review
+    if(isReviewed){
+        product.reviews.forEach(review =>{
+            if(review.user.toString() == req.user.id.toString()){
+                review.comment = comment
+                review.rating = rating
+            }
+        })
+    }else{
+        //creating the review
+        product.reviews.push(review);
+        product.numberOfreviews = product.reviews.length;
+    }
+    //find the average of the product reviews
+    product.ratings = product.reviews.reduce((acc,review)=>{
+        return review.rating + acc
+    },0) / product.reviews.length;
+
+    product.ratings = isNaN(product.ratings) ? 0 : product.ratings
+    await product.save({validateBeforeSave:false});
+
+    res.status(200).json({
+        success:true
+    })
+})
+
+//Get reviews -api/v1/reviews?id={productId}
+
+exports.getReviews = catchAsyncError(async(req,res,next)=>{
+     const product = await productModel.findById(req.query.id)
+
+     res.status(200).json({
+        success:true,
+        reviews:product.reviews
+     })
+})
+
+//Get admin products - api/v1/admin/products
+
+exports.getAdminProducts = catchAsyncError(async(req,res,next)=>{
+      const products = await productModel.find()
+      res.status(200).send({
+        success:true,
+        products
+      })
+})

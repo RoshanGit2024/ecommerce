@@ -13,6 +13,7 @@ dotenv.config({path:path.join(__dirname,'config','config.env')})
 const products=require('./Routes/product');
 const auth = require('./Routes/auth')
 const orders=require('./Routes/order');
+const payment=require('./Routes/payment')
 
   
   
@@ -30,6 +31,7 @@ app.use(cors({
 app.use('/api/v1/',products);
 app.use('/api/v1/',auth);
 app.use('/api/v1/',orders);
+app.use('/api/v1/',payment);
 
 if(process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, '../frontend/build')));

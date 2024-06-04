@@ -6,7 +6,7 @@ import {toast} from 'react-toastify'
 import {useNavigate,Link, useLocation} from 'react-router-dom'
 
 
-function Login() {
+function Login({attempts,setAttempts,isLocked,setIsLocked,timer,setTimer}) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const dispatch = useDispatch()
@@ -33,11 +33,31 @@ function Login() {
           return
         }
       }, [error,isAuthenticated,dispatch]);
+
+      useEffect(()=>{
+        if(attempts > 5){
+            setIsLocked(true)
+            setTimer(20)
+
+            const countDown = setInterval(()=>{
+                setTimer(prevTimer => {
+                    if(prevTimer <= 1){
+                   clearInterval(countDown);
+                   setIsLocked(false);
+                   setAttempts(0);
+                   return 0;
+                    }
+                    return prevTimer - 1;
+                })
+            },1000)
+        }
+      },[attempts])
     return (
         <Fragment  >
             <MetaData title={'Login'} />
             <div className="row wrapper">
                 <div className="col-10 col-lg-5">
+                    {isLocked ? (<p>Too many incorrect attempts.please try after {timer}seconds</p>):(
                     <form onSubmit={handleSubmit} className="shadow-lg">
                         <h1 className="mb-3">Login</h1>
                         <div className="form-group">
@@ -65,7 +85,7 @@ function Login() {
                         </button>
 
                         <Link to={'/register'} className="float-right mt-3">New User?</Link>
-                    </form>
+                    </form>)}
                 </div>
             </div>
         </Fragment>
