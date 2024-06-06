@@ -7,6 +7,7 @@ import {DropdownButton,Dropdown,Image} from 'react-bootstrap'
 import { logout } from '../actions/userActions';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2'
+import Avatar from './user/Avatar';
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -49,7 +50,10 @@ function Nav() {
          <Dropdown className='d-inline'>
              <Dropdown.Toggle variant='default text-white pr-5' id='dropdown-basic'>
               <figure className='avatar avatar-nav'>
-                 <Image width={"50px"} src={user.avatar ?? './images/default_avatar.png'}/>
+                {user.avatar ? (
+                 <Image width={"50px"} src={user.avatar} alt={user.name}/>
+                ):(
+                  <Avatar name={user.name}/>)}
               </figure>
               <span>{user.name}</span>
              </Dropdown.Toggle>

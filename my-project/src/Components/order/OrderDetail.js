@@ -3,6 +3,7 @@ import { useParams,Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { orderDetail as orderDetailAction } from '../../actions/orderActions'
 import Loader from '../Loader'
+import OrderSteps from './OrderSteps'
 
 function OrderDetail() {
     const { orderDetail, loading } = useSelector(state => state.orderState)
@@ -25,7 +26,7 @@ function OrderDetail() {
 
                     <h4 className="mb-4">Shipping Info</h4>
                     <p><b>Name:</b> {user.name}</p>
-                    <p><b>Phone:</b> {shippingInfo.phoneNo}</p>
+                    <p><b>Phone:</b> {shippingInfo.phoneNumber}</p>
                     <p className="mb-4"><b>Address:</b>{shippingInfo.address}, {shippingInfo.city}, {shippingInfo.postalCode}, {shippingInfo.state},{shippingInfo.country}</p>
                     <p><b>Amount:</b> ${totalPrice}</p>
 
@@ -36,7 +37,9 @@ function OrderDetail() {
 
 
                     <h4 className="my-4">Order Status:</h4>
-                    <p className={orderStatus&&orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}><b>{orderStatus}</b></p>
+                    <div className={orderStatus&&orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}>
+                        <OrderSteps status={orderStatus}/>
+                    </div>
 
 
                     <h4 className="my-4">Order Items:</h4>

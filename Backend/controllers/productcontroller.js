@@ -1,5 +1,5 @@
 const productModel=require('../models/productmodel')
-const ErrorHandler = require('../utils/errorhandler')
+const ErrorHandler = require('../utils/errorHandler')
 const catchAsyncError = require('../middlewares/catchAsyncError')
 const APIFeatures = require('../utils/apiFeatures')
 
@@ -69,8 +69,25 @@ exports.postProducts=catchAsyncError(async(req,res,next)=>{
 
 //update product -api/v1/product/:id
 
-exports.updateProduct = async(req,res,next)=>{
-   let product = productModel.findById(req.params.id)
+exports.updateProduct = catchAsyncError(async(req,res,next)=>{
+   let product =await productModel.findById(req.params.id)
+
+   //uploading images
+
+   let images = []
+   //if images not cleared we keep existing images
+   if(req.body.imagesCleared === 'false'){
+    images = product.images;
+   }
+    let BASE_URL = process.env.BACKEND_URL;
+    if(req.files.length > 0) {
+        req.files.forEach( file => {
+            let url = `${BASE_URL}/uploads/products/${file.originalname}`;
+            images.push({ image: url })
+        })
+    }
+
+    req.body.images = images;
 
    if(!product){
     return res.status(404).json({
@@ -88,7 +105,7 @@ exports.updateProduct = async(req,res,next)=>{
     success:true,
     product
    })
-}
+})
 
 //Delete product - api/v1/products/:id
 exports.deleteProduct = async(req,res,next)=>{

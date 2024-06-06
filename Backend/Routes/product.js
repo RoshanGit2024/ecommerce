@@ -17,12 +17,14 @@ const upload = multer({storage: multer.diskStorage({
   
 router.route('/products').get(getProducts)
 router.route('/products/:id').get(getSingleProducts)
-                             .put(updateProduct)
-                             .delete(deleteProduct)
 router.route('/review').put(isAuthenticateUser,createReview)
 router.route('/reviews').get(getReviews)
 
 //admin routes
 router.route('/admin/products/new').post(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), postProducts)
 router.route('/admin/products').get(isAuthenticateUser, authorizeRoles('admin'), getAdminProducts)
+router.route('/admin/products/:id').delete(isAuthenticateUser, authorizeRoles('admin'), deleteProduct)
+router.route('/admin/products/:id').put(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), updateProduct)
+
+
 module.exports=router

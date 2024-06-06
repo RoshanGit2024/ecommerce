@@ -8,8 +8,8 @@ router.route('/order/:id').get(isAuthenticateUser, getSigleOrder)
 router.route('/myorders').get(isAuthenticateUser, myOrders)
 
 //Admin routes
-router.route('/orders').get(isAuthenticateUser,authorizeRoles('admin'),orders)
-router.route('/order/:id').put(isAuthenticateUser,authorizeRoles('admin'),UpdateOrder)
+router.route('/admin/orders').get(isAuthenticateUser,authorizeRoles('admin'),orders)
+router.route('/admin/order/:id').put(isAuthenticateUser,authorizeRoles('admin'),UpdateOrder)
                           .delete(isAuthenticateUser,authorizeRoles('admin'),deleteOrder)
 
 

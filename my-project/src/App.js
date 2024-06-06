@@ -32,6 +32,12 @@ import OrderDetail from './Components/order/OrderDetail';
 import Dashboard from './Components/admin/Dashboard';
 import ProductList from './Components/admin/ProductList';
 import NewProduct from './Components/admin/NewProduct';
+import Errorcomp from './Components/Errorcomp';
+import UpdateProduct from './Components/admin/UpdateProduct';
+import OrderList from './Components/admin/OrderList';
+import UpdateOrder from './Components/admin/UpdateOrder';
+import UserList from './Components/admin/UserList';
+import UpdateUser from './Components/admin/UpdateUser';
 
 
 
@@ -53,7 +59,7 @@ function App() {
         const {data} = await axios.get('http://localhost:8000/api/v1/stripeapi')
         setStripeApiKey(data.stripeApiKey)
         }catch(error){
-          console.error(error.mess)
+          console.error(error)
         }
       }
       getStripeApiKey()
@@ -94,6 +100,11 @@ function App() {
           <Route path='/admin/dashboard' element={<ProtectedRoute isAdmin={true}><Dashboard /></ProtectedRoute>} />
           <Route path='/admin/products' element={<ProtectedRoute isAdmin={true}><ProductList /></ProtectedRoute>} />
           <Route path='/admin/products/create' element={<ProtectedRoute isAdmin={true}><NewProduct /></ProtectedRoute>} />
+          <Route path='/admin/product/:id' element={<ProtectedRoute isAdmin={true}><UpdateProduct /></ProtectedRoute>} />
+          <Route path='/admin/orders' element={<ProtectedRoute isAdmin={true}><OrderList /></ProtectedRoute>} />
+          <Route path='/admin/order/:id' element={<ProtectedRoute isAdmin={true}><UpdateOrder /></ProtectedRoute>} />
+          <Route path='/admin/users' element={<ProtectedRoute isAdmin={true}><UserList /></ProtectedRoute>} />
+          <Route path='/admin/user/:id' element={<ProtectedRoute isAdmin={true}><UpdateUser /></ProtectedRoute>} />
           </Routes>
           <Footer />
           </HelmetProvider>

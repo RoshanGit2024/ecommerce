@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { adminProductRequest, adminProductSuccess, adminProductsFail, productRequest, productSuccess, productsFail } from '../slices/productsSlice';
-import {  prodSingleRequest, prodSingleSuccess, prodSingleFail, createReviewRequest, createReviewSuccess, createReviewFail, newProductRequest, newProductSuccess, newProductFail } from "../slices/productSlice";
+import {  prodSingleRequest, prodSingleSuccess, prodSingleFail, createReviewRequest, createReviewSuccess, createReviewFail, newProductRequest, newProductSuccess, newProductFail, deleteProductRequest, deleteProductSuccess, deleteProductFail, updateProductRequest, updateProductSuccess, updateProductFail } from "../slices/productSlice";
 
 
 export const getProducts = (keyword = '') => async (dispatch) => {
@@ -13,7 +13,8 @@ export const getProducts = (keyword = '') => async (dispatch) => {
         const { data } = await axios.get(url);
         dispatch(productSuccess(data));
     } catch (error) {
-        dispatch(productsFail(error.response.data.message));
+        const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
+        dispatch(productsFail(errorMessage));
     }
 };
 
@@ -61,3 +62,24 @@ export const createNewProduct =productData => async (dispatch) => {
       dispatch(newProductFail(error.response.data.message));
   }
 };
+
+export const deleteProduct =id => async (dispatch) => {
+  try {
+      dispatch(deleteProductRequest());
+      await axios.delete(`http://localhost:8000/api/v1/admin/products/${id}`);
+      dispatch(deleteProductSuccess());
+  } catch (error) {
+      dispatch(deleteProductFail(error.response.data.message));
+  }
+};
+
+export const updateProduct =(id,productData) => async (dispatch) => {
+  try {
+      dispatch(updateProductRequest());
+      const { data } = await axios.put(`http://localhost:8000/api/v1/admin/products/${id}`,productData);
+      dispatch(updateProductSuccess(data));
+  } catch (error) {
+      dispatch(updateProductFail(error.response.data.message));
+  }
+};
+

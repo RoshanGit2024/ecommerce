@@ -9,7 +9,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify';
 import { orderCompleted } from '../../slices/cartSlice';
 import Steps from './Steps';
-import {crearError as crearOrderError} from '../../slices/orderSlice'
+import {clearError as clearOrderError} from '../../slices/orderSlice'
 import Loader from '../Loader';
 
 
@@ -54,7 +54,7 @@ function Payment() {
         if (orderError) {
             toast(orderError,{
               type:'error',
-              onOpen:()=>{dispatch(crearOrderError)}
+              onOpen:()=>{dispatch(clearOrderError)}
             });
             return
           }

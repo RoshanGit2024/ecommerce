@@ -81,7 +81,7 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     }
 
     //updating the product stock of each  order item
-    order.OrderItems.forEach(async orderItem =>{
+    order.orderItems.forEach(async orderItem =>{
       await updateStock(orderItem.product,orderItem.quantity)
     })
 
@@ -94,7 +94,7 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     })
    })
 
-   async function updateStock(productID,quantity){
+   async function updateStock(productId,quantity){
     const product = await productModel.findById(productId);
     product.stock = product.stock - quantity;
     product.save({validateBeforeSave:false})

@@ -8,7 +8,7 @@ function OrderSuccess() {
 
                 <h2>Your Order has been placed successfully.</h2>
 
-                <a href="/order">Go to Orders</a>
+                <a href="/orders">Go to Orders</a>
             </div>
 
         </div>

@@ -20,6 +20,7 @@ import {
     updatePasswordFail
 } from "../slices/authSlice"
 import axios from 'axios'
+import { deleteUserFail, deleteUserRequest, deleteUserSuccess, updateUserFail, updateUserRequest, updateUserSuccess, userFail, userRequest, userSuccess, usersFail, usersRequest, usersSuccess } from "../slices/userSlice";
 axios.defaults.withCredentials = true;
 
 export const login = (email,password)=>async(dispatch)=>{
@@ -57,7 +58,8 @@ export const loaduser = async(dispatch)=>{
         const{data}=await axios.get('http://localhost:8000/api/v1/myprofile',)
         dispatch(loadUserSuccess(data))
     } catch (error) {
-        dispatch(loadUserFail(error.response.data.message))
+        const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
+        dispatch(loadUserFail(errorMessage))
     }
 }
 
@@ -108,7 +110,58 @@ export const updatePassword = (formData)=>async(dispatch)=>{
     }
 }
 
+export const getUsers = async(dispatch)=>{
 
+    try {
+        dispatch(usersRequest())
+        const{data}=await axios.get('http://localhost:8000/api/v1/admin/users',)
+        dispatch(usersSuccess(data))
+    } catch (error) {
+        const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
+        dispatch(usersFail(errorMessage))
+    }
+}
+
+export const getUser =id=> async(dispatch)=>{
+
+    try {
+        dispatch(userRequest())
+        const{data}=await axios.get(`http://localhost:8000/api/v1/admin/user/${id}`)
+        dispatch(userSuccess(data))
+    } catch (error) {
+        const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
+        dispatch(userFail(errorMessage))
+    }
+}
+
+export const deleteUser =id=> async(dispatch)=>{
+
+    try {
+        dispatch(deleteUserRequest())
+        await axios.delete(`http://localhost:8000/api/v1/admin/user/${id}`)
+        dispatch(deleteUserSuccess())
+    } catch (error) {
+        const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
+        dispatch(deleteUserFail(errorMessage))
+    }
+}
+
+export const updateUser = (id,formData)=>async(dispatch)=>{
+
+    try {
+        dispatch(updateUserRequest())
+        const config = {
+            headers:{
+                'Content-type':'application/json'
+            }
+        }
+        await axios.put(`http://localhost:8000/api/v1/admin/user/${id}`,formData,config)
+        dispatch(updateUserSuccess())
+        toast.success("user details updated successfully")
+    } catch (error) {
+        dispatch(updateUserFail(error.response.data.message))
+    }
+}
 export const clearAuthError=dispatch=>{
     dispatch(clearError())
 }

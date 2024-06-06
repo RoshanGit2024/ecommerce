@@ -110,4 +110,66 @@ exports.changePassword = catchAsyncError(async(req,res,next)=>{
   })
  })
  
+
+ //get all users - api/v1/admin/users
+
+ exports.getUsers = catchAsyncError(async(req,res,next)=>{
+   const users = await User.find() 
+
+   res.status(200).json({
+      success:true,
+      users
+   })
+ })
+
+ //get single user - api/v1/admin/user/:id
+
+ exports.getSingleUser = catchAsyncError(async(req,res,next)=>{
+   const user = await User.findById(req.params.id)
+
+   if(!user){
+      return next(new ErrorHandler(`user not found with id:${req.params.id}`,400));
+   }
+
+   res.json({
+      success:true,
+      user
+   })
+ })
+
+ //update users - api/v1/admin/user/:id
+
+ exports.updateUser = catchAsyncError(async(req,res,next)=>{
+  
+   const newUserData = {
+      name:req.body.name,
+      email:req.body.email,
+      role:req.body.role
+   }
+
+   const user = await User.findByIdAndUpdate(req.params.id,newUserData,{
+      new:true,
+      runValidators: true
+   })
+
+
+   res.status(200).json({
+      success:true,
+      user
+   })
+ })
  
+ //Delete user - api/v1/admin/:id
+
+ exports.deleteUser = catchAsyncError(async(req,res,next)=>{
+
+   const user = await User.deleteOne({_id:req.params.id})
+
+   if(!user){
+      return next(new ErrorHandler(`user not found with id:${req.params.id}`,400))
+   }
+   res.status(200).json({
+      success:true,
+      message:"user deleted successfully"
+   })
+ })

@@ -5,12 +5,16 @@ const {
      logoutUser,
      getUserProfile,
      changePassword,
-     updateProfile
+     updateProfile,
+     getUsers,
+     getSingleUser,
+     updateUser,
+     deleteUser
     } = require('../controllers/authController');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path')
-const {isAuthenticateUser} = require('../middlewares/authenticate')
+const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticate')
 
 const upload = multer({storage:multer.diskStorage({
     destination:function(req,file,cb){
@@ -28,6 +32,15 @@ router.route('/logout').get(logoutUser)
 router.route('/myprofile').get(isAuthenticateUser,getUserProfile)
 router.route('/password/change').put(isAuthenticateUser,changePassword)
 router.route('/update').put(isAuthenticateUser,upload.single('avatar'),updateProfile)
+
+//admin api
+router.route('/admin/users').get(isAuthenticateUser, authorizeRoles('admin'), getUsers)
+router.route('/admin/user/:id').get(isAuthenticateUser, authorizeRoles('admin'), getSingleUser)
+                               .put(isAuthenticateUser, authorizeRoles('admin'), updateUser)
+                               .delete(isAuthenticateUser, authorizeRoles('admin'), deleteUser)
+
+
+
 
 
 
