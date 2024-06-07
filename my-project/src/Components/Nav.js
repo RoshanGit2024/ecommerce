@@ -41,11 +41,11 @@ function Nav() {
       </div>
     </div>
 
-    <div className="col-12 col-md-6 mt-2 mt-md-0">
+    <div className="col-12 col-md-6 ml-0 mt-2 mt-md-0">
       <Search />
     </div>
     
-    <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
+    <div className="col-12 col-md-3 mt-4 ml-0 mt-md-0 text-center">
       {isAuthenticated ? (
          <Dropdown className='d-inline'>
              <Dropdown.Toggle variant='default text-white pr-5' id='dropdown-basic'>
@@ -53,9 +53,9 @@ function Nav() {
                 {user.avatar ? (
                  <Image width={"50px"} src={user.avatar} alt={user.name}/>
                 ):(
-                  <Avatar name={user.name}/>)}
+                  <Avatar name={user.name } size={40} fontSize={16}/>)}
               </figure>
-              <span>{user.name}</span>
+              <span className="username">{user.name}</span>
              </Dropdown.Toggle>
              <Dropdown.Menu>
             {user.role === 'admin' && <Dropdown.Item className='text-dark' onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</Dropdown.Item>}

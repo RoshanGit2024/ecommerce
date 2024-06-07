@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 
 function UserOrders() {
     const{userOrders=[]}=useSelector(state=>state.orderState)
+
     const dispatch = useDispatch()
 
     useEffect(()=>{
@@ -44,13 +45,26 @@ function UserOrders() {
             rows:[]
         }
         userOrders.forEach(userOrder=>{
+
+            const latestUserStatus = userOrder.status && userOrder.status.length > 0 
+            ? userOrder.status[userOrder.status.length - 1].userStatus 
+            : '';
+
+            let statusDisplay;
+
+            if(latestUserStatus == 'canceled'){
+                statusDisplay = <p style={{color:'red'}}>canceled</p>
+            }else{
+                statusDisplay = userOrder.orderStatus && userOrder.orderStatus.includes('delivered')?
+                (<p style={{color:'green'}}>{userOrder.orderStatus}</p>):
+                (<p style={{color:'red'}}>{userOrder.orderStatus}</p>)
+            }
+
             data.rows.push({
                 id:userOrder._id,
                 numOfItems:userOrder.orderItems.length,
                 amount:`$${userOrder.totalPrice}`,
-                status:userOrder.orderStatus && userOrder.orderStatus.includes('delivered')?
-                (<p style={{color:'green'}}>{userOrder.orderStatus}</p>):
-                (<p style={{color:'red'}}>{userOrder.orderStatus}</p>),
+                status:statusDisplay,
                 actions:<Link to={`/orders/${userOrder._id}`} className='btn btn-primary'>
                     <i className='fa fa-eye'></i>
                 </Link>

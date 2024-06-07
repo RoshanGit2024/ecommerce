@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { createNewProduct } from '../../actions/productActions'
 import { clearError, clearProductCreated } from '../../slices/productSlice'
 import { toast } from 'react-toastify'
+import MetaData from '../MetaData'
 
 function NewProduct() {
   const[name,setName]=useState("")
@@ -82,6 +83,8 @@ function NewProduct() {
     }
   },[isProductCreated,error,dispatch])
   return (
+    <Fragment>
+      <MetaData title={'new product'}/>
     <div className='row'>
       <div className='col-12 col-md-2'>
         <Sidebar />
@@ -192,7 +195,7 @@ function NewProduct() {
         </Fragment>
       </div>
     </div>
-
+    </Fragment>
   )
 }
 

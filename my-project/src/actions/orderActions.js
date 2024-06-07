@@ -1,4 +1,4 @@
-import { adminOrderFail, adminOrderRequest, adminOrderSuccess, createOrderFail, createOrderRequest, createOrderSuccess, deleteOrderFail, deleteOrderRequest, deleteOrderSuccess, orderDetailFail, orderDetailRequest, orderDetailSuccess, updateOrderFail, updateOrderRequest, updateOrderSuccess, userOrderFail, userOrderRequest, userOrderSuccess } from "../slices/orderSlice"
+import { adminOrderFail, adminOrderRequest, adminOrderSuccess, cancelOrderFail, cancelOrderRequest, cancelOrderSuccess, createOrderFail, createOrderRequest, createOrderSuccess, deleteOrderFail, deleteOrderRequest, deleteOrderSuccess, orderDetailFail, orderDetailRequest, orderDetailSuccess, updateOrderFail, updateOrderRequest, updateOrderSuccess, userOrderFail, userOrderRequest, userOrderSuccess } from "../slices/orderSlice"
 import axios from 'axios'
 
 
@@ -62,3 +62,13 @@ export const updateOrder=(id,orderData)=>async(dispatch)=>{
     }
 }
 
+
+export const cancelOrder=(id,reason)=>async(dispatch)=>{
+    try {
+       dispatch(cancelOrderRequest())
+       const {data} = await axios.put(`http://localhost:8000/api/v1/order/${id}/cancel`,{reason})
+       dispatch(cancelOrderSuccess(data))
+    } catch (error) {
+        dispatch(cancelOrderFail(error.response.data.message ))
+    }
+}

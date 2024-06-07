@@ -1,4 +1,5 @@
 import React from 'react'
+import Avatar from '../user/Avatar'
 
 function ProductReview({reviews}) {
   return (
@@ -12,8 +13,10 @@ function ProductReview({reviews}) {
          </div>
          <span className="review-time">{String(review.postedAt).substring(0,10)}</span>
          <div className='name-profle'>
-         <img src={review.user.avatar} alt={review.user.name} className="profile-pic" />
-         <p className="review_user font-bold">{review.user.name}</p>
+          {review.user.avatar ? (<img src={review.user.avatar} alt={review.user.name} className="profile-pic" />) : (
+            <Avatar style={{height:'45px',width:'45px'}} name={review.user.name}/>
+          )}
+         <p className="review_user font-bold ml-2">{review.user.name}</p>
          </div>
          <p className="review_comment mt-2">{review.comment}</p>
          <hr />

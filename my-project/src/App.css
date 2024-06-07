@@ -558,7 +558,18 @@ footer {
 #sidebar ul li a i {
   margin-right: 0.3rem;
 }
+#sidebar ul li a.active,
+ul li.active > .dropdown-toggle {
+  font-weight: bold;
+  color: black; 
+  background-color: white;
+}
 
+#sidebar ul li.active .dropdown-item.active {
+  font-weight: bold;
+  color:black;
+  background-color: #ffff;
+}
 #sidebar ul li.active > a,
 a[aria-expanded='true'] {
   color: #fff;
@@ -749,3 +760,13 @@ ul.CTAs a {
 .active + .status-step::after {
   background: #4caf50;
 }
+
+.username {
+  max-width: 100px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  vertical-align: middle;
+}
+

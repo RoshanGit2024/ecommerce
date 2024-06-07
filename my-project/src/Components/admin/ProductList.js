@@ -8,6 +8,7 @@ import Sidebar from './Sidebar'
 import Loader from '../Loader'
 import {MDBDataTable} from 'mdbreact'
 import { toast } from 'react-toastify'
+import MetaData from '../MetaData'
 
 
 function ProductList() {
@@ -92,6 +93,8 @@ function ProductList() {
                 <h1 className="my-4">Product list</h1>
                  <Fragment>
                     {loading ? <Loader/>:
+                    <Fragment>
+                        <MetaData title={'admin product list'}/>
                        <MDBDataTable 
                            data={setProducts()}
                            bordered
@@ -99,6 +102,7 @@ function ProductList() {
                            hover
                            className='px-3'
                        />
+                     </Fragment>
                     }
                  </Fragment>
             </div>

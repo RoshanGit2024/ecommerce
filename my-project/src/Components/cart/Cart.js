@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import{useDispatch, useSelector} from 'react-redux'
 import {decreaseCartItemQty,removeItemFromCart,increaseCartItemQty} from '../../slices/cartSlice'
+import MetaData from '../MetaData'
 
 function Cart() {
        const{items}=useSelector(state => state.cartState)
@@ -32,6 +33,7 @@ function Cart() {
       
   return (
     <Fragment>
+        <MetaData title={'cart items'}/>
             {cartItems.length==0 ? 
                 <h2 className="mt-5">Your Cart is Empty</h2> :
                 <Fragment>

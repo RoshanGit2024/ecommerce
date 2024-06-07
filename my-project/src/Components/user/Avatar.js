@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Avatar({name}) {
+function Avatar({name,size=50,fontSize=20}) {
 
         const firstLetter = name ? name.charAt(0).toUpperCase():''
 
@@ -10,10 +10,11 @@ function Avatar({name}) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        height:'100%',
-        width:'100%',
         borderRadius: '50%',
         fontWeight: 'bold',
+        height:size,
+        width:size,
+        fontSize:fontSize
     };
   return (
     <div className='avatar' style={avatarStyle}>

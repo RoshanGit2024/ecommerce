@@ -29,6 +29,18 @@ const orderSchema = new mongoose.Schema({
         required:true,
         ref:'user'
     },
+
+    status:[
+        {
+            userStatus:{
+                type:String,
+                default:'pending'
+            },
+            reason:{
+                type:String,
+            }
+        }
+    ],
     orderItems:[{
         name:{
             type:String,

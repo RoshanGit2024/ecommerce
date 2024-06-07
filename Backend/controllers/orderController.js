@@ -6,7 +6,7 @@ const ErrorHandler = require('../utils/errorHandler')
 //create order - /api/v1/order
 exports.createOrder=catchAsyncError(async(req,res,next)=>{
     const orderModel=require('../models/orderModel')
-    const productModel=require('../models/productmodel')
+    //const productModel=require('../models/productmodel')
     
   const {
     orderItems,
@@ -17,6 +17,16 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     totalPrice,
     paymentInfo
   }=req.body;
+
+  for(let item of orderItems){
+    const product = await productModel.findById(item.product);
+
+    {/*if(product.stock < item.quantity){
+      return next(new ErrorHandler(`not enough stock available for product ${product.name}`,400))
+    }*/}
+    product.stock -= item.quantity
+    await product.save({ validateBeforeSave: false})
+  }
 
   const order = await orderModel.create({
     orderItems,
@@ -29,6 +39,7 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     paidAt:Date.now(),
     user:req.user.id
   })
+
        res.status(200).json({
         success:true,
         order
@@ -96,7 +107,7 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
 
    async function updateStock(productId,quantity){
     const product = await productModel.findById(productId);
-    product.stock = product.stock - quantity;
+    product.stock -= quantity;
     product.save({validateBeforeSave:false})
    }
 
@@ -111,6 +122,36 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     await orderModel.deleteOne({ _id: req.params.id });
     res.status(200).json({
       success:true,
+    })
+   })
+
+   //cancel order -api/v1/order/:id/cancel 
+
+   exports.cancelOrder = catchAsyncError(async(req,res,next)=>{
+    const{reason}=req.body;
+    const order = await orderModel.findById(req.params.id);
+    if(!order){
+      return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
+    }
+    if(['delivered','shipped'].includes(order.orderStatus.toLowerCase())){
+      return next(new ErrorHandler('Cannot cancel a delivered or shipped order',400))
+    }
+
+    //updating stock
+
+    for(let item of order.orderItems){
+      const product = await productModel.findById(item.product); 
+      if(product){
+        product.stock += item.quantity;
+        await product.save()
+      }
+    }
+    order.status.push({userStatus:'canceled',reason})
+    await order.save();
+
+    res.status(200).json({
+      success:true,
+      order
     })
    })
 

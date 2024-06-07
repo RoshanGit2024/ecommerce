@@ -21,7 +21,7 @@ function ProductDetail({ cartItems, setcartitems }) {
     const {user,isAuthenticated} = useSelector((state) => state.authState)
     const dispatch = useDispatch();
     const navigate = useNavigate()
-    const [qty, setQty] = useState(1);
+    const [quantity, setQuantity] = useState(1);
     const { id } = useParams();
 
     const [show, setShow] = useState(false);
@@ -55,25 +55,24 @@ function ProductDetail({ cartItems, setcartitems }) {
 
     function handleCart() {
         if(isAuthenticated){
-            dispatch(addcartItems(user._id,product._id, qty))
+            dispatch(addcartItems(user._id,product._id, quantity))
         }else{
             navigate('/login')
         }
     }
 
-    function increaseQty() {
-        if (product.stock == qty) {
-            return;
-        } if (product.stock == 0) return;
-        setQty((state) => state + 1)
+    const increaseQty = () => {
+        const count = document.querySelector('.count')
+        if(product.stock ==0 ||  count.valueAsNumber >= product.stock) return;
+        const qty = count.valueAsNumber + 1;
+        setQuantity(qty);
     }
-
-    function decreaseQty() {
-        if (qty > 1) {
-            setQty((state) => state - 1)
-        }
+    const decreaseQty = () => {
+        const count = document.querySelector('.count')
+        if(count.valueAsNumber == 1 ) return;
+        const qty = count.valueAsNumber - 1;
+        setQuantity(qty);
     }
-
     const handleReview=()=>{
         const formData = new FormData();
         formData.append('rating',rating);
@@ -114,11 +113,11 @@ function ProductDetail({ cartItems, setcartitems }) {
                                 <p id="product_price">${product.price}</p>
                                 <p>Stocks: {product.stock}</p>
                                 <div className="stockCounter d-inline">
-                                    <span className="btn btn-danger minus" onClick={decreaseQty} disabled={qty == 1 ? true : false}>-</span>
+                                    <span className="btn btn-danger minus" onClick={decreaseQty} disabled={quantity == 1 ? true : false}>-</span>
 
-                                    <input type="number" className="form-control count d-inline" value={qty} readOnly />
+                                    <input type="number" className="form-control count d-inline" value={quantity} readOnly />
 
-                                    <span className="btn btn-primary plus" onClick={increaseQty}>+</span>
+                                    <span className="btn btn-primary plus" onClick={increaseQty} disabled={product.stock == 0 ? true : false}>+</span>
                                 </div>
                                 <button type="button"
                                     id="cart_btn"
