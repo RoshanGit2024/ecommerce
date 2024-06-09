@@ -15,7 +15,7 @@ import Login from './Components/user/Login';
 import Register from './Components/user/Register';
 import store from './Store'
 import { loaduser } from './actions/userActions';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Profile from './Components/user/Profile';
 import ProtectedRoute from './Components/routes/ProtectedRoute';
 import UpdateProfile from './Components/user/UpdateProfile';
@@ -32,7 +32,6 @@ import OrderDetail from './Components/order/OrderDetail';
 import Dashboard from './Components/admin/Dashboard';
 import ProductList from './Components/admin/ProductList';
 import NewProduct from './Components/admin/NewProduct';
-import Errorcomp from './Components/Errorcomp';
 import UpdateProduct from './Components/admin/UpdateProduct';
 import OrderList from './Components/admin/OrderList';
 import UpdateOrder from './Components/admin/UpdateOrder';
@@ -44,7 +43,6 @@ import ReviewList from './Components/admin/ReviewList';
 
 function App() {
     const[stripeApiKey,setStripeApiKey]=useState("")
-    const[cartItems,setcartitems]=useState([])
     const { isAuthenticated } = useSelector(state => state.authState)
     
     useEffect(() => {
@@ -67,7 +65,7 @@ function App() {
         <div>
           <ToastContainer theme='dark' position='top-center'/>
           <HelmetProvider>
-          <Nav cartItems={cartItems}/>
+          <Nav/>
 
           {/* Normal users routes */}
           <Routes>
@@ -88,12 +86,12 @@ function App() {
 
           <Route 
              path='/product/:id' 
-             element={<ProductDetail cartItems={cartItems} setcartitems={setcartitems}/>} 
+             element={<ProductDetail/>} 
           />
 
           <Route 
                  path='/cart' 
-                 element={<Cart cartItems={cartItems} setcartitems={setcartitems}/>} 
+                 element={<Cart/>} 
           />
 
           <Route 

@@ -15,7 +15,7 @@ import { clearReviewSubmited,clearError, clearProduct } from '../../slices/produ
 import ProductReview from './ProductReview'
 
 
-function ProductDetail({ cartItems, setcartitems }) {
+function ProductDetail() {
     const { loading, product={}, error,isReviewSubmited } = useSelector((state) => state.prodSingleState);
     const {loading: cartLoading} = useSelector((state) => state.cartState)
     const {user,isAuthenticated} = useSelector((state) => state.authState)

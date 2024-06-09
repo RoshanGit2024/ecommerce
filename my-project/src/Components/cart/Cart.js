@@ -1,14 +1,15 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import {toast} from 'react-toastify'
 import{useDispatch, useSelector} from 'react-redux'
-import {decreaseCartItemQty,removeItemFromCart,increaseCartItemQty} from '../../slices/cartSlice'
+import {decreaseCartItemQty,
+        removeItemFromCart,
+        increaseCartItemQty
+       } from '../../slices/cartSlice'
 import MetaData from '../MetaData'
 
 function Cart() {
        const{items}=useSelector(state => state.cartState)
        const {user,isAuthenticated} = useSelector((state) => state.authState)
-       const[complete,setcomplete]=useState(false)
        const dispatch = useDispatch();
        const navigate = useNavigate();
    
@@ -60,15 +61,33 @@ function Cart() {
 
                                             <div className="col-4 col-lg-3 mt-4 mt-lg-0">
                                                 <div className="stockCounter d-inline">
-                                                    <span className="btn btn-danger minus" onClick={() => decreaseQty(item)}>-</span>
-                                                    <input type="number" className="form-control count d-inline" value={item.quantity} readOnly />
+                                                    <span 
+                                                       className="btn btn-danger minus" 
+                                                       onClick={() => decreaseQty(item)}>
+                                                        -
+                                                    </span>
 
-                                                    <span className="btn btn-primary plus" onClick={() => increaseQty(item)}>+</span>
+                                                    <input 
+                                                       type="number" 
+                                                       className="form-control count d-inline" 
+                                                       value={item.quantity} 
+                                                       readOnly 
+                                                    />
+
+                                                    <span 
+                                                      className="btn btn-primary plus" 
+                                                      onClick={() => increaseQty(item)}>
+                                                        +
+                                                    </span>
+
                                                 </div>
                                             </div>
 
                                             <div className="col-4 col-lg-1 mt-4 mt-lg-0">
-                                                <i id="delete_cart_item" onClick={() => dispatch(removeItemFromCart(item.product))} className="fa fa-trash btn btn-danger"></i>
+                                                <i id="delete_cart_item" 
+                                                   onClick={() => dispatch(removeItemFromCart(item.product))} 
+                                                   className="fa fa-trash btn btn-danger">
+                                                </i>
                                             </div>
 
                                         </div>
@@ -91,7 +110,12 @@ function Cart() {
                                 <p>Est. total: <span className="order-summary-values">${items.reduce((acc, item)=>(acc + item.quantity * item.price), 0)}</span></p>
                 
                                 <hr />
-                                <button id="checkout_btn" onClick={checkoutHandler}  className="btn btn-primary btn-block">Check out</button>
+                                <button id="checkout_btn" 
+                                        onClick={checkoutHandler}   
+                                        className="btn btn-primary btn-block">
+                                            Check out
+                                </button>
+
                             </div>
                         </div>
                     </div>

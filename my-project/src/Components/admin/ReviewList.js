@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
 import { deleteReview ,getReviews} from '../../actions/productActions'
 import {clearError, clearReviewDeleted} from '../../slices/productSlice'
 import Sidebar from './Sidebar'
@@ -75,6 +74,8 @@ function ReviewList() {
         dispatch(getReviews(productId))
     }
     useEffect(() => {
+
+        //if error occured during deleted
         if (error) {
             toast(error, {
                 type: 'error',
@@ -83,6 +84,7 @@ function ReviewList() {
             return
         }
 
+       //if review has been successfully deleted
         if(isReviewDeleted){
             toast.success("Review deleted successfully",{
               onOpen:()=>dispatch(clearReviewDeleted())
