@@ -38,6 +38,8 @@ import UpdateOrder from './Components/admin/UpdateOrder';
 import UserList from './Components/admin/UserList';
 import UpdateUser from './Components/admin/UpdateUser';
 import ReviewList from './Components/admin/ReviewList';
+import ForgotPassword from './Components/user/ForgotPassword';
+import ResetPassword from './Components/user/ResetPassword';
 
 
 
@@ -157,7 +159,18 @@ function App() {
               path='/orders/:id' 
               element={<ProtectedRoute>
                         <OrderDetail/>
-                      </ProtectedRoute>}/>
+                      </ProtectedRoute>}
+          />
+
+          <Route 
+              path='/password/forgot' 
+              element={<ForgotPassword/>}
+         />
+
+        <Route 
+              path='/password/reset/:token' 
+              element={<ResetPassword/>}
+         />
 
           {stripeApiKey && <Route 
                              path='/payment' 

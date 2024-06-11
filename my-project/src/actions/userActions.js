@@ -17,10 +17,27 @@ import {
     updateProfileFail,
     updatePasswordRequest,
     updatePasswordSuccess,
-    updatePasswordFail
+    updatePasswordFail,
+    forgotPasswordRequest,
+    forgotPasswordSuccess,
+    forgotPasswordFail,
+    resetPasswordRequest,
+    resetPasswordSuccess,
+    resetPasswordFail
 } from "../slices/authSlice"
 import axios from 'axios'
-import { deleteUserFail, deleteUserRequest, deleteUserSuccess, updateUserFail, updateUserRequest, updateUserSuccess, userFail, userRequest, userSuccess, usersFail, usersRequest, usersSuccess } from "../slices/userSlice";
+import { deleteUserFail, 
+        deleteUserRequest, 
+        deleteUserSuccess, 
+        updateUserFail, 
+        updateUserRequest, 
+        updateUserSuccess, 
+        userFail, 
+        userRequest, 
+        userSuccess, 
+        usersFail, 
+        usersRequest, 
+        usersSuccess } from "../slices/userSlice";
 axios.defaults.withCredentials = true;
 
 export const login = (email,password)=>async(dispatch)=>{
@@ -164,4 +181,36 @@ export const updateUser = (id,formData)=>async(dispatch)=>{
 }
 export const clearAuthError=dispatch=>{
     dispatch(clearError())
+}
+
+export const forgotPassword = (formData)=>async(dispatch)=>{
+
+    try {
+        dispatch(forgotPasswordRequest())
+        const config = {
+            headers:{
+                'Content-type':'application/json'
+            }
+        }
+        const{data} = await axios.post('http://localhost:8000/api/v1/password/forgot',formData,config)
+        dispatch(forgotPasswordSuccess(data))
+    } catch (error) {
+        dispatch(forgotPasswordFail(error.response.data.message))
+    }
+}
+
+export const resetPassword = (formData,token)=>async(dispatch)=>{
+
+    try {
+        dispatch(resetPasswordRequest())
+        const config = {
+            headers:{
+                'Content-type':'application/json'
+            }
+        }
+        const{data} = await axios.post(`http://localhost:8000/api/v1/password/reset/${token}`,formData,config)
+        dispatch(resetPasswordSuccess(data))
+    } catch (error) {
+        dispatch(resetPasswordFail(error.response.data.message))
+    }
 }

@@ -34,7 +34,7 @@ function Login({attempts,setAttempts,isLocked,setIsLocked,timer,setTimer}) {
         }
       }, [error,isAuthenticated,dispatch]);
 
-      useEffect(()=>{
+      {/*useEffect(()=>{
         if(attempts > 5){
             setIsLocked(true)
             setTimer(20)
@@ -51,7 +51,7 @@ function Login({attempts,setAttempts,isLocked,setIsLocked,timer,setTimer}) {
                 })
             },1000)
         }
-      },[attempts])
+      },[attempts])*/}
     return (
         <Fragment  >
             <MetaData title={'Login'} />
@@ -78,7 +78,7 @@ function Login({attempts,setAttempts,isLocked,setIsLocked,timer,setTimer}) {
                                 onChange={e => setPassword(e.target.value)} />
                         </div>
 
-                        <a href="#" className="float-right mb-4">Forgot Password?</a>
+                        <Link to={'/password/forgot'} className="float-right mb-4">Forgot Password?</Link>
 
                         <button id="login_button" type="submit" className="btn btn-block py-3" disabled={loading}>
                             LOGIN

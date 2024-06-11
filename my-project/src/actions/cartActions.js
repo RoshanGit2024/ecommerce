@@ -1,4 +1,3 @@
-//cartActions.js
 import {  addCartItemRequest, addCartItemSuccess } from "../slices/cartSlice"
 import { toast } from "react-toastify"
 import axios from "axios"

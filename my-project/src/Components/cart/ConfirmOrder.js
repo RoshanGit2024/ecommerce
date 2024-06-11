@@ -7,9 +7,10 @@ import Steps from './Steps'
 import { toast } from 'react-toastify'
 
 function ConfirmOrder() {
-    const { shippingInfo={}, items: cartItems } = useSelector(state => state.cartState)
-    const { user } = useSelector(state => state.authState)
+    const { shippingInfo={}, items: cartItem } = useSelector(state => state.cartState)
+    const { user, isAuthenticated } = useSelector(state => state.authState)
     const navigate = useNavigate()
+    const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
     const itemsPrice = cartItems.reduce((acc, item) => (acc + item.price * item.quantity), 0)
     const shippingPrice = itemsPrice > 200 ? 0 : 25;
     let taxPrice = Number(0.05 * itemsPrice);
@@ -26,6 +27,9 @@ function ConfirmOrder() {
         sessionStorage.setItem('orderInfo',JSON.stringify(data))
         navigate('/payment')
     }
+    
+    
+
 
     useEffect(() => {
         if (!validateShipping(shippingInfo)) {

@@ -9,7 +9,9 @@ const {
      getUsers,
      getSingleUser,
      updateUser,
-     deleteUser
+     deleteUser,
+     forgotPassword,
+     resetPassword
     } = require('../controllers/authController');
 const router = express.Router();
 const multer = require('multer');
@@ -32,6 +34,8 @@ router.route('/logout').get(logoutUser)
 router.route('/myprofile').get(isAuthenticateUser,getUserProfile)
 router.route('/password/change').put(isAuthenticateUser,changePassword)
 router.route('/update').put(isAuthenticateUser,upload.single('avatar'),updateProfile)
+router.route('/password/forgot').post(forgotPassword)
+router.route('/password/reset/:token').post(resetPassword)
 
 //admin api
 router.route('/admin/users').get(isAuthenticateUser, authorizeRoles('admin'), getUsers)

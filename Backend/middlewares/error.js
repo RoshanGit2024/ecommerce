@@ -24,7 +24,7 @@ module.exports = (err, req, res, next) => {
             error = new Error(message);
         }
         if(err.code == 11000){
-            let message = `Duplicate ${Object.keys(err.keyValue)} error`
+            let message = `${Object.keys(err.keyValue)} exist`
             error = new Error(message)
         }
         if(err.name == 'JSONWebTokenError'){

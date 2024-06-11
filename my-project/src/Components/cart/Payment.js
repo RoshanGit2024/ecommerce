@@ -20,9 +20,10 @@ function Payment() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'))
-    const { user } = useSelector(state => state.authState)
-    const { items: cartItems, shippingInfo } = useSelector(state => state.cartState)
+    const { user, isAuthenticated} = useSelector(state => state.authState)
+    const { items: cartItem, shippingInfo } = useSelector(state => state.cartState)
     const { error: orderError, loading } = useSelector(state => state.orderState)
+    const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
     const paymentData = {
         amount: Math.round(orderInfo.totalPrice * 100), //send the payment data in cents type 100 cents make 1 dollor
         shipping: {
@@ -87,9 +88,9 @@ function Payment() {
                         id: result.paymentIntent.id,
                         status: result.paymentIntent.status
                     }
-                    dispatch(orderCompleted())
+                    dispatch(orderCompleted(user._id))
                     dispatch(createOrder(order))
-                    console.log(order)
+                    //console.log(order)
                     navigate('/order/success')
                 } else {
                     toast.warning('Please Try again!')
