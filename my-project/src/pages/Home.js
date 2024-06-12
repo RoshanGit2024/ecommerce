@@ -21,7 +21,7 @@ function Home() {
     if(error){
       toast.error("error occurd")
     }else{
-    dispatch(getProducts(null, currentPage));
+    dispatch(getProducts(null,null,null,null,currentPage));
     }
   }, [error,dispatch,currentPage]);
 
@@ -35,7 +35,7 @@ function Home() {
       <section id="products" className="container mt-5">
         <div className="row">
           {products && products.map((product) => (
-            <ProductCard key={product._id} product={product}/>
+            <ProductCard col={3} key={product._id} product={product}/>
           ))}
         </div>
       </section>

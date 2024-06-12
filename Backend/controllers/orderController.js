@@ -119,6 +119,14 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
       return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
     }
 
+    for(let item of order.orderItems){
+      const product = await productModel.findById(item.product); 
+      if(product){
+        product.stock += item.quantity;
+        await product.save()
+      }
+    }
+
     await orderModel.deleteOne({ _id: req.params.id });
     res.status(200).json({
       success:true,

@@ -103,7 +103,7 @@ function ProductDetail() {
                                 <div className="rating-outer">
                                     <div className="rating-inner" style={{ width: `${(product.ratings / 5) * 100}%` }}></div>
                                 </div>
-                                <span id='no_of_reviews'>{product.numOfReviews} Reviews</span>
+                                <span id='no_of_reviews'>{product.numberOfreviews} Reviews</span>
                                 <hr />
                                 <p id="product_price">${product.price}</p>
                                 <p>Stocks: {product.stock}</p>

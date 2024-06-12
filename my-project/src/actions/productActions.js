@@ -30,12 +30,21 @@ import {  prodSingleRequest,
         } from "../slices/productSlice";
 
 
-export const getProducts = (keyword,currentPage) => async (dispatch) => {
+export const getProducts = (keyword,price,category,rating,currentPage) => async (dispatch) => {
     try {
         dispatch(productRequest());
         let link = `${process.env.REACT_APP_API_URL}/products?page=${currentPage}`;
         if (keyword) {
           link += `&keyword=${keyword}`;
+        }
+        if (price) {
+          link += `&price[gte]=${price[0]}&&price[lte]=${price[1]}`;
+        }
+        if (category) {
+          link += `&category=${category}`;
+        }
+        if (rating) {
+          link += `&ratings=${rating}`;
         }
         const { data } = await axios.get(link);
         dispatch(productSuccess(data));

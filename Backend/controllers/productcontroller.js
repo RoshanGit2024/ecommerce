@@ -32,7 +32,6 @@ exports.getProducts=catchAsyncError(async(req,res,next)=>{
 
 //get single products API = api/v1/products/:id
 exports.getSingleProducts=catchAsyncError(async(req,res,next)=>{
-        console.log(req.params.id)
         const product=await productModel.findById(req.params.id).populate('reviews.user','name email avatar')
         
         if(!product){
@@ -151,11 +150,19 @@ exports.createReview = catchAsyncError(async(req,res,next)=>{
         product.reviews.push(review);
         product.numberOfreviews = product.reviews.length;
     }
-    //find the average of the product reviews
-    product.ratings = product.reviews.reduce((acc,review)=>{
-        return review.rating + acc
-    },0) / product.reviews.length;
 
+    const calculateAverageRating = (reviews) => {
+        if (product.reviews.length === 0) return 0; // No reviews, return 0
+        
+        const totalRating = product.reviews.reduce((acc, review) => acc + review.rating, 0);
+        const averageRating = totalRating / product.reviews.length;
+        
+        return averageRating;
+      };
+    //find the average of the product reviews
+    product.ratings = calculateAverageRating(product.reviews)
+
+    product.ratings = Math.min(Math.max(product.ratings, 1), 5);
     product.ratings = isNaN(product.ratings) ? 0 : product.ratings
     await product.save({validateBeforeSave:false});
 
