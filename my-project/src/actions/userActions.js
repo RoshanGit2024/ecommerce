@@ -37,14 +37,15 @@ import { deleteUserFail,
         userSuccess, 
         usersFail, 
         usersRequest, 
-        usersSuccess } from "../slices/userSlice";
+        usersSuccess 
+    } from "../slices/userSlice";
 axios.defaults.withCredentials = true;
 
 export const login = (email,password)=>async(dispatch)=>{
 
     try {
         dispatch(loginRequest())
-        const{data}=await axios.post('http://localhost:8000/api/v1/login',{email,password})
+        const{data}=await axios.post(`${process.env.REACT_APP_API_URL}/login`,{email,password})
         dispatch(loginSuccess(data))
     } catch (error) {
         dispatch(loginFail(error.response.data.message))
@@ -61,7 +62,7 @@ export const register = (userData)=>async(dispatch)=>{
                 'content-type':'multipart/form-data'
             }
         }
-        const{data}=await axios.post('http://localhost:8000/api/v1/register',userData,config)
+        const{data}=await axios.post(`${process.env.REACT_APP_API_URL}/register`,userData,config)
         dispatch(registerSuccess(data))
     } catch (error) {
         dispatch(registerFail(error.response.data.message))
@@ -72,7 +73,7 @@ export const loaduser = async(dispatch)=>{
 
     try {
         dispatch(loadUserRequest())
-        const{data}=await axios.get('http://localhost:8000/api/v1/myprofile',)
+        const{data}=await axios.get(`${process.env.REACT_APP_API_URL}/myprofile`,)
         dispatch(loadUserSuccess(data))
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
@@ -83,7 +84,7 @@ export const loaduser = async(dispatch)=>{
 export const logout = async(dispatch)=>{
 
     try {
-        await axios.get('http://localhost:8000/api/v1/logout',)
+        await axios.get(`${process.env.REACT_APP_API_URL}/logout`,)
         dispatch(logoutSuccess())
         toast.success("Logout successful..")
     } catch (error) {
@@ -103,7 +104,7 @@ export const updateProfile = (userData)=>async(dispatch)=>{
             },
             withCredentials: true,
         }
-        const{data}=await axios.put('http://localhost:8000/api/v1/update',userData,config)
+        const{data}=await axios.put(`${process.env.REACT_APP_API_URL}/update`,userData,config)
         dispatch(updateProfileSuccess(data))
     } catch (error) {
         dispatch(updateProfileFail(error.response.data.message))
@@ -119,7 +120,7 @@ export const updatePassword = (formData)=>async(dispatch)=>{
                 'Content-type':'application/json'
             }
         }
-        await axios.put('http://localhost:8000/api/v1/password/change',formData,config)
+        await axios.put(`${process.env.REACT_APP_API_URL}/password/change`,formData,config)
         dispatch(updatePasswordSuccess())
         toast.success("password updated successfully")
     } catch (error) {
@@ -131,7 +132,7 @@ export const getUsers = async(dispatch)=>{
 
     try {
         dispatch(usersRequest())
-        const{data}=await axios.get('http://localhost:8000/api/v1/admin/users',)
+        const{data}=await axios.get(`${process.env.REACT_APP_API_URL}/admin/users`,)
         dispatch(usersSuccess(data))
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
@@ -143,7 +144,7 @@ export const getUser =id=> async(dispatch)=>{
 
     try {
         dispatch(userRequest())
-        const{data}=await axios.get(`http://localhost:8000/api/v1/admin/user/${id}`)
+        const{data}=await axios.get(`${process.env.REACT_APP_API_URL}/admin/user/${id}`)
         dispatch(userSuccess(data))
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
@@ -155,7 +156,7 @@ export const deleteUser =id=> async(dispatch)=>{
 
     try {
         dispatch(deleteUserRequest())
-        await axios.delete(`http://localhost:8000/api/v1/admin/user/${id}`)
+        await axios.delete(`${process.env.REACT_APP_API_URL}/admin/user/${id}`)
         dispatch(deleteUserSuccess())
     } catch (error) {
         const errorMessage = error.response && error.response.data ? error.response.data.message : 'An error occurred';
@@ -172,7 +173,7 @@ export const updateUser = (id,formData)=>async(dispatch)=>{
                 'Content-type':'application/json'
             }
         }
-        await axios.put(`http://localhost:8000/api/v1/admin/user/${id}`,formData,config)
+        await axios.put(`${process.env.REACT_APP_API_URL}/admin/user/${id}`,formData,config)
         dispatch(updateUserSuccess())
         toast.success("user details updated successfully")
     } catch (error) {
@@ -192,7 +193,7 @@ export const forgotPassword = (formData)=>async(dispatch)=>{
                 'Content-type':'application/json'
             }
         }
-        const{data} = await axios.post('http://localhost:8000/api/v1/password/forgot',formData,config)
+        const{data} = await axios.post(`${process.env.REACT_APP_API_URL}/password/forgot`,formData,config)
         dispatch(forgotPasswordSuccess(data))
     } catch (error) {
         dispatch(forgotPasswordFail(error.response.data.message))
@@ -208,7 +209,7 @@ export const resetPassword = (formData,token)=>async(dispatch)=>{
                 'Content-type':'application/json'
             }
         }
-        const{data} = await axios.post(`http://localhost:8000/api/v1/password/reset/${token}`,formData,config)
+        const{data} = await axios.post(`${process.env.REACT_APP_API_URL}/password/reset/${token}`,formData,config)
         dispatch(resetPasswordSuccess(data))
     } catch (error) {
         dispatch(resetPasswordFail(error.response.data.message))

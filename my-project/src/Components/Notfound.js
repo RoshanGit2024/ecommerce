@@ -1,11 +1,10 @@
 import React from 'react'
-import notfound from '../Assets/Notfounderr.webp'
+import notfound from '../Assets/Notfounderr.png'
 
 function Notfound() {
   return (
-    <div className='notfound-container'>
-      <h1 >Result not found</h1>
-      <img src={notfound} alt='err' height="250" width="250"/>
+    <div className='notfound-container mt-1'>
+      <img src={notfound} alt='err' height="500" width="500"/>
     </div>
   )
 }

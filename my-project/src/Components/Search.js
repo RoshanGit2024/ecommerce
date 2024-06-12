@@ -30,12 +30,16 @@ function Search() {
             <input
                 type="text"
                 id="search_field"
-                onChange={(e) => setKeyword(e.target.value)}
                 className="form-control"
                 placeholder="Enter Product Name ..."
+                onChange={(e) => setKeyword(e.target.value)}
+                value={keyword}
             />
             <div className="input-group-append">
-                <button type="submit" id="search_btn" className="btn">
+                <button 
+                 type="submit" 
+                 id="search_btn" 
+                 className="btn">
                     <i className="fa fa-search" aria-hidden="true"></i>
                 </button>
             </div>

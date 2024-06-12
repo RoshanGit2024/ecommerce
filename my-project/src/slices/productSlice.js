@@ -23,7 +23,7 @@ const productSlice = createSlice({
             return {
                 ...state,
                 loading: false,
-                product: action.payload.product
+                product: action.payload.product,
             }
         },
         prodSingleFail(state, action) {

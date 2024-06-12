@@ -54,7 +54,7 @@ function OrderList() {
 
             let statusDisplay;
             if (latestUserStatus === 'canceled') {
-                statusDisplay = <p style={{ color: 'red' }}>Canceled</p>;
+                statusDisplay = <p style={{ color: 'red'}}><b>Canceled</b></p>;
             } else {
                 statusDisplay = order.orderStatus && order.orderStatus.includes('delivered')
                     ? <p style={{ color: 'green' }}>{order.orderStatus}</p>

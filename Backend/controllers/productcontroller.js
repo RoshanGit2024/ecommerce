@@ -5,26 +5,27 @@ const APIFeatures = require('../utils/apiFeatures')
 
 //get products API = api/v1/products
 exports.getProducts=catchAsyncError(async(req,res,next)=>{
-   const query=req.query.keyword?{ name:{
-      $regex: req.query.keyword,
-      $options:'i'
-   }}:{}
-
-   const categoryCondition = req.query.category ? {
-    category: req.query.category
-    } : {};
-
-    const qry ={
-        ...query,
-        ...categoryCondition
-    }
-   const products= await productModel.find(query).find(categoryCondition);
+   const resPerPage = 3
    
+   let buildQuery =()=> {
+    return new APIFeatures(productModel.find(),req.query).search().filter()
+   }
+
+   const filterProductsCount =await buildQuery().query.countDocuments({})
+   const totalProductsCount = await productModel.countDocuments({})
+   let productsCount = totalProductsCount;
+
+   if(filterProductsCount !== totalProductsCount){
+    productsCount = filterProductsCount
+   }
+
+   const products= await buildQuery().paginate(resPerPage).query;   
     //await new Promise(resolve => setTimeout(resolve,3000))
     //return next(new ErrorHandler('Unable to send products',400))
     res.json({
         success:'true',
-        count:products.length,
+        count:productsCount,
+        resPerPage,
         products
     })
 })

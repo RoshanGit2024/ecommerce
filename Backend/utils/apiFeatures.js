@@ -8,7 +8,7 @@ class APIFeatures {
        let keyword =  this.queryStr.keyword ? {
             name: {
                 $regex: this.queryStr.keyword,
-                $options: 'i'
+                $options: 'i' //check the uppper and lower case
             }
        }: {};
 
