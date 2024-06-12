@@ -4,7 +4,7 @@ import MetaData from '../../Components/MetaData';
 import { getProducts } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../Components/Loader';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import Errorcomp from '../Errorcomp';
 import { useParams } from 'react-router-dom';
 import Notfound from '../Notfound';
@@ -16,7 +16,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 function ProductSearch() {
   const dispatch = useDispatch();
-  const { products, loading, error, productsCount } = useSelector((state) => state.productState);
+  const { products, loading, error } = useSelector((state) => state.productState);
   const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState([1, 1000]);
   const [priceChanged, setPriceChanged] = useState(price);
@@ -45,7 +45,7 @@ function ProductSearch() {
     } else {
       dispatch(getProducts(keyword, price, category, rating, currentPage));
     }
-  }, [error, dispatch, keyword, keyword, priceChanged, category, rating]);
+  }, [error, dispatch, keyword, priceChanged, category, rating]);
 
 
   return (

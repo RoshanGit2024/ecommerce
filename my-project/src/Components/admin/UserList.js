@@ -9,12 +9,19 @@ import Loader from '../Loader'
 import {MDBDataTable} from 'mdbreact'
 import { toast } from 'react-toastify'
 import MetaData from '../MetaData'
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Dialog from '@material-ui/core/Dialog';
 
 
 function UserList() {
     const { users, loading = true, error,isUserDeleted } = useSelector(state => state.userState)
     const[show,setShow]=useState(false)
     const[password,setPassword]=useState('')
+    const [dialogOpen, setDialogOpen] = useState(false)
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
     const[confirmPassword,setConfirmPassword]=useState('')
     const dispatch = useDispatch()
 
@@ -69,7 +76,7 @@ function UserList() {
                 actions: (
                     <Fragment>
                         <Link to={`/admin/user/${user._id}`} className='btn btn-primary'><i className='fa fa-pencil'></i></Link>
-                        <Button onClick={e=>handleDelete(e,user._id)} className='btn btn-danger py-1 px-2 ml-3'>
+                        <Button onClick={()=>handleOpen(user._id)} className='btn btn-danger py-1 px-2 ml-3'>
                             <i className='fa fa-trash'></i>
                         </Button>
                         <Button className='btn btn-primary py-1 px-2 ml-3' onClick={handleShow}>
@@ -83,9 +90,20 @@ function UserList() {
     }
 
     const handleDelete = (e,id) =>{
+        setDialogOpen(false)
         e.target.disabled=true
         dispatch(deleteUser(id))
     } 
+
+    const handleDialogClose = () => {
+        setDialogOpen(false)
+    }
+
+    const handleOpen = (id) => {
+        setSelectedOrderId(id)
+        setDialogOpen(true)
+    }
+
 
     useEffect(() => {
         if (error) {
@@ -127,7 +145,7 @@ function UserList() {
                  </Fragment>
             </div>
 
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} onHide={handleDialogClose}>
                 <Modal.Header>
                     <Modal.Title>Reset password</Modal.Title>
                 </Modal.Header>
@@ -148,6 +166,25 @@ function UserList() {
                     <Button variant='primary' onClick={handleSubmit}>submit</Button>
                 </Modal.Footer>
             </Modal>
+
+            <Dialog open={dialogOpen} onClose={handleClose}>
+                <DialogTitle>
+                    Please confirm
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure want to Delete the user <b >{selectedOrderId}</b>?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Close
+                    </Button>
+                    <Button onClick={e => handleDelete(e, selectedOrderId)} style={{ background: 'red', color: 'white', border: 'none' }} autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 }

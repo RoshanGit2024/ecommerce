@@ -769,4 +769,8 @@ ul.CTAs a {
   display: inline-block;
   vertical-align: middle;
 }
+.profile-active{
+  background-color: blue;
+  color: #ffff;
+}
 

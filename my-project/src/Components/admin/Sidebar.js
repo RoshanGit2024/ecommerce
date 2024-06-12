@@ -8,7 +8,7 @@ function Sidebar() {
 
     const isActive = (path) => {
         return location.pathname === path ? 'active' : '';
-      };
+    };
 
     return (
         <div className="sidebar-wrapper">

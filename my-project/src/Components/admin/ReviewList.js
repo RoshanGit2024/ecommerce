@@ -8,11 +8,18 @@ import Loader from '../Loader'
 import {MDBDataTable} from 'mdbreact'
 import { toast } from 'react-toastify'
 import MetaData from '../MetaData'
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import Dialog from '@material-ui/core/Dialog';
 
 
 function ReviewList() {
     const { reviews=[], loading = true, error,isReviewDeleted } = useSelector(state => state.prodSingleState)
     const[productId,setProductId]=useState("")
+    const [open, setOpen] = useState(false)
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
     const dispatch = useDispatch()
 
     const setReviews = () => {
@@ -54,7 +61,7 @@ function ReviewList() {
                 comment:review.comment,
                 actions: (
                     <Fragment>
-                        <Button onClick={e=>handleDelete(e,review._id)} className='btn btn-danger py-1 px-2 ml-3'>
+                        <Button onClick={() => handleOpen(review._id)} className='btn btn-danger py-1 px-2 ml-3'>
                             <i className='fa fa-trash'></i>
                         </Button>
                     </Fragment>
@@ -65,9 +72,20 @@ function ReviewList() {
     }
 
     const handleDelete = (e,id) =>{
+        setOpen(false)
         e.target.disabled=true
         dispatch(deleteReview(productId,id))
     } 
+
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    const handleOpen = (id) => {
+        setSelectedOrderId(id)
+        setOpen(true)
+    }
+
 
     const handleSubmit =(e)=>{
         e.preventDefault()
@@ -136,6 +154,28 @@ function ReviewList() {
                     }
                  </Fragment>
             </div>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>
+                    Please confirm
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure want to Delete <b >{selectedOrderId}</b>?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Close
+                    </Button>
+                    <Button 
+                      onClick={e => handleDelete(e,selectedOrderId)} 
+                      style={{ background: 'red', color: 'white', border: 'none' }} 
+                      autoFocus
+                    >
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </div>
     )
 }

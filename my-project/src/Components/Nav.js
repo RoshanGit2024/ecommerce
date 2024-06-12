@@ -1,35 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaShoppingCart } from 'react-icons/fa';
 import Search from './Search';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import{useDispatch, useSelector} from 'react-redux'
-import {DropdownButton,Dropdown,Image} from 'react-bootstrap'
+import {Dropdown,Image} from 'react-bootstrap'
 import { logout } from '../actions/userActions';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2'
 import Avatar from './user/Avatar';
+import DialogActions from '@material-ui/core/DialogActions'; 
+import DialogContent from '@material-ui/core/DialogContent'; 
+import DialogTitle from '@material-ui/core/DialogTitle'; 
+import DialogContentText from '@material-ui/core/DialogContentText'; 
+import Dialog from '@material-ui/core/Dialog'; 
+import Button from '@material-ui/core/Button'; 
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
   const{items:cartItems}=useSelector(state => state.cartState)
+  const[open,setOpen]=useState(false)
+
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
 
+  const isActive = (path) => {
+      return location.pathname === path ? 'active' : '';
+  };
   const cart = isAuthenticated ? cartItems.filter((item) => item.userId === user._id) : [];
 
+  const handleClose =()=>{
+    setOpen(false)
+  }
+
+  const handleOpen =()=> {
+    setOpen(true)
+  }
   const handleLogout=()=>{
-    Swal.fire({
-      title: "Are you sure you want's to logout?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#ff0000",
-      cancelButtonColor: "#000000",
-      confirmButtonText: "yes,logout"
-    }).then((result) => {
-      if (result.isConfirmed) {
+        setOpen(false)
         dispatch(logout)
-      }
-    });
   }
   return (
     <nav className="navbar row">
@@ -58,10 +65,10 @@ function Nav() {
               <span className="username">{user.name}</span>
              </Dropdown.Toggle>
              <Dropdown.Menu>
-            {user.role === 'admin' && <Dropdown.Item className='text-dark' onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</Dropdown.Item>}
-              <Dropdown.Item className='text-dark' onClick={()=>{navigate('/myprofile')}}>Profile</Dropdown.Item>
-              <Dropdown.Item className='text-dark' onClick={()=>{navigate('/orders')}}>orders</Dropdown.Item>
-              <Dropdown.Item className='text-danger' onClick={handleLogout}>Logout</Dropdown.Item>
+            {user.role === 'admin' && <Dropdown.Item className={isActive('/admin/dashboard')}  onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</Dropdown.Item>}
+              <Dropdown.Item className={isActive('/myprofile')} onClick={()=>{navigate('/myprofile')}}>Profile</Dropdown.Item>
+              <Dropdown.Item className={isActive('/orders')}  onClick={()=>{navigate('/orders')}}>orders</Dropdown.Item>
+              <Dropdown.Item className='text-danger' onClick={handleOpen}>Logout</Dropdown.Item>
              </Dropdown.Menu>
          </Dropdown>
       )
@@ -75,6 +82,24 @@ function Nav() {
         </span>
       </Link>
     </div>
+    <Dialog open={open} onClose={handleClose}>
+       <DialogTitle>
+         Please confirm
+       </DialogTitle>
+       <DialogContent> 
+          <DialogContentText> 
+            Are you sure want to logout? 
+          </DialogContentText> 
+      </DialogContent> 
+      <DialogActions> 
+          <Button onClick={handleClose} color="primary"> 
+           Close 
+          </Button> 
+          <Button onClick={handleLogout} style={{background:'red',color:'white',border:'none'}} autoFocus> 
+           Yes 
+          </Button> 
+      </DialogActions> 
+    </Dialog>
   </nav>
 );
 }
