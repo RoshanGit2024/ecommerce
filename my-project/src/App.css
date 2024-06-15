@@ -575,6 +575,10 @@ a[aria-expanded='true'] {
   color: #fff;
   background: #232f3e;
 }
+.product-dropdown .active{
+  background-color: #fff;
+  color: #000;
+}
 a[data-toggle='collapse'] {
   position: relative;
 }
@@ -774,3 +778,34 @@ ul.CTAs a {
   color: #ffff;
 }
 
+/*wish list like icon */
+
+.heart {
+  cursor: pointer;
+  position: relative;
+  font-size: 40px;
+  transition: color 0.3s;
+}
+
+.heart.liked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  height: 80%;
+  background-color: red;
+  clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 50% 75%, 25% 100%, 0% 35%);
+  z-index: -1;
+}
+
+.heart.liked {
+  color: red;
+}
+.your-activity a{
+  color: #232f3e;
+}
+.your-activity a:hover{
+  text-decoration: none;
+}

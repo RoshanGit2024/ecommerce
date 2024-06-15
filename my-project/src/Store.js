@@ -6,6 +6,7 @@ import cartReducer from './slices/cartSlice'
 import authReducer from './slices/authSlice'
 import orderReducer from './slices/orderSlice'
 import userReducer from './slices/userSlice'
+import wishlistReducer from './slices/wishSlice'
 
 
 const reducer = combineReducers({
@@ -14,7 +15,8 @@ const reducer = combineReducers({
     authState:authReducer,
     cartState:cartReducer,
     orderState:orderReducer,
-    userState:userReducer
+    userState:userReducer,
+    wishState:wishlistReducer
 })
 
 const store = configureStore({

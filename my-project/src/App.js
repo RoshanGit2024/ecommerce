@@ -40,6 +40,7 @@ import UpdateUser from './Components/admin/UpdateUser';
 import ReviewList from './Components/admin/ReviewList';
 import ForgotPassword from './Components/user/ForgotPassword';
 import ResetPassword from './Components/user/ResetPassword';
+import UserWishlist from './Components/user/UserWishlist';
 
 
 
@@ -106,6 +107,15 @@ function App() {
                 element={<ProtectedRoute>
                            <Profile />
                         </ProtectedRoute>} 
+          />
+
+          <Route 
+                path='/wishlist'
+                element={
+                  <ProtectedRoute>
+                    <UserWishlist/>
+                  </ProtectedRoute>
+                }
           />
 
           <Route 

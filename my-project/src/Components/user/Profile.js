@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Avatar from './Avatar'
 import Loader from '../Loader'
 import MetaData from '../MetaData'
+import { FaHeart } from "react-icons/fa";
 
 function Profile() {
     const { user, loading } = useSelector(state => state.authState)
@@ -25,6 +26,21 @@ function Profile() {
                             <Link to={'/myprofile/update'} id="edit_profile" className="btn btn-primary btn-block my-5">
                                 Edit Profile
                             </Link>
+                            <hr className='my-2' />
+                            <div className='mt-3'>
+                                <h3 className='mb-3'>My activity</h3>
+                                <ul className="your-activity">
+                                    <li style={{
+                                        cursor: 'pointer',
+                                        listStyleType: 'none',
+                                    }}>
+                                        <FaHeart style={{ color: 'red' }} />
+                                        <b className="ml-1">
+                                            <Link to="/wishlist">Your wishlist</Link>
+                                        </b>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
 
                         <div className="col-12 col-md-5">

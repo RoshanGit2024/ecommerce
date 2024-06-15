@@ -43,6 +43,7 @@ function OrderDetail() {
     const handleCancelOrder = () => {
         dispatch(cancelOrder(selectOrderId,reason))
         setShow(false)
+        setOrderCanceled(true)
     }
     const handleClose =()=>setShow(false)
     const handleShow = (orderId) => {
@@ -73,18 +74,13 @@ function OrderDetail() {
 
 
                             <h4 className="my-4">Order Status:</h4>
-                          {latestUserStatus !== 'canceled' ? (<div className={orderStatus && orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}>
+                        {latestUserStatus !== 'canceled'  ? (<div className={orderStatus && orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}>
                                <OrderSteps status={orderStatus} />
-                                <button className='btn btn-danger' 
-                                disabled={
-                                    orderStatus.toLowerCase() === 'delivered' ||
-                                    orderStatus.toLowerCase() === 'shipped'   ||
-                                    latestUserStatus === 'canceled' || 
-                                    loading
-                                }
+                               {orderStatus !== 'delivered' && orderStatus !== 'delivered' && <button className='btn btn-danger' 
+                                disabled={loading}
                                 onClick={()=>handleShow(orderDetail._id)}>
                                     cancel order
-                                </button>
+                                </button>}
                             </div>) :(
                             <div>
                             <p >Status:<span className='redColor'>you have {latestUserStatus} the order</span> </p>

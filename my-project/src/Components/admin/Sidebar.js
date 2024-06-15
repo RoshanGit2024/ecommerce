@@ -6,8 +6,8 @@ function Sidebar() {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const isActive = (path) => {
-        return location.pathname === path ? 'active' : '';
+    const isActive = (paths) => {
+        return paths.includes(location.pathname ) ? 'active' : '';
     };
 
     return (
@@ -34,7 +34,7 @@ function Sidebar() {
                     </li>
 
                     <li>
-                        <Link to={'/admin/orders'} className={isActive('/admin/orders')}>
+                        <Link to={'/admin/orders'} className={isActive(['/admin/orders'])}>
                             <i className="fa fa-shopping-basket"></i> Orders
                         </Link>
                     </li>

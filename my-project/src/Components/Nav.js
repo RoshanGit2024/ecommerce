@@ -12,6 +12,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContentText from '@material-ui/core/DialogContentText'; 
 import Dialog from '@material-ui/core/Dialog'; 
 import Button from '@material-ui/core/Button'; 
+import logo from '../Assets/logo.png'
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -22,8 +23,8 @@ function Nav() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const isActive = (path) => {
-      return location.pathname === path ? 'active' : '';
+  const isActive = (paths) => {
+      return paths.includes(location.pathname ) ? 'active' : '';
   };
   const cart = isAuthenticated ? cartItems.filter((item) => item.userId === user._id) : [];
 
@@ -43,7 +44,7 @@ function Nav() {
     <div className="col-12 col-md-3">
       <div className="navbar-brand">
         <Link to={'/'}>
-          <h1 style={{ color: 'white' }}>shop</h1>
+          <img src={logo} alt='logo' width="100px" height="70px"/>
         </Link>
       </div>
     </div>
@@ -65,9 +66,27 @@ function Nav() {
               <span className="username">{user.name}</span>
              </Dropdown.Toggle>
              <Dropdown.Menu>
-            {user.role === 'admin' && <Dropdown.Item className={isActive('/admin/dashboard')}  onClick={()=>{navigate('/admin/dashboard')}}>Dashboard</Dropdown.Item>}
-              <Dropdown.Item className={isActive('/myprofile')} onClick={()=>{navigate('/myprofile')}}>Profile</Dropdown.Item>
-              <Dropdown.Item className={isActive('/orders')}  onClick={()=>{navigate('/orders')}}>orders</Dropdown.Item>
+            {user.role === 'admin' && <Dropdown.Item 
+                                  className={isActive(['/admin/dashboard',
+                                                       '/admin/orders',
+                                                       '/admin/products',
+                                                       '/admin/products/create',
+                                                       '/admin/users',
+                                                       '/admin/reviews',
+                                                       '/admin/product/'
+                                                       ])}  
+                                  onClick={()=>{navigate('/admin/dashboard')}}>
+                                    Dashboard
+                                  </Dropdown.Item>}
+              <Dropdown.Item 
+              className={isActive(['/myprofile',
+                                   '/myprofile/update',
+                                   '/orders',
+                                   '/myprofile/update/password',
+                                   ])} 
+              onClick={()=>{navigate('/myprofile')}}>
+                Profile
+              </Dropdown.Item>
               <Dropdown.Item className='text-danger' onClick={handleOpen}>Logout</Dropdown.Item>
              </Dropdown.Menu>
          </Dropdown>

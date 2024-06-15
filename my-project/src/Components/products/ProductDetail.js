@@ -11,10 +11,13 @@ import MetaData from '../MetaData';
 import { addcartItems } from '../../actions/cartActions';
 import { clearReviewSubmited, clearError, clearProduct } from '../../slices/productSlice';
 import ProductReview from './ProductReview';
+import { FaHeart } from "react-icons/fa";
+import {addWishlist} from '../../actions/wishlistActions'
 
 function ProductDetail() {
     const { loading, product = {}, error, isReviewSubmited } = useSelector((state) => state.prodSingleState);
     const { loading: cartLoading } = useSelector((state) => state.cartState);
+    const { items } = useSelector(state => state.wishState);
     const { user, isAuthenticated } = useSelector((state) => state.authState);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -23,10 +26,20 @@ function ProductDetail() {
     const [show, setShow] = useState(false);
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState("");
+    const [inWishlist,setInWishlist]=useState(false)
     
+    useEffect(()=>{
+        if (product && product._id && user && user._id) {
+            setInWishlist(items.some(item => item.product == product._id && item.userId == user._id))
+        }
+     },[items,product,user])
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleWish =()=> {
+        dispatch(addWishlist(user._id,id))
+    }
 
     useEffect(() => {
         if (isReviewSubmited) {
@@ -97,7 +110,23 @@ function ProductDetail() {
                             </div>
 
                             <div className="col-12 col-lg-5 mt-5">
-                                <h3>{product.name}</h3>
+                                <div className='d-flex justify-content-between'>
+                                    <h3>{product.name}</h3>
+                                    <span 
+                                    data-toggle="tooltip" 
+                                    data-placement="bottom" 
+                                    title={`${!inWishlist ? 'add to wishlist' : 'remove from wish list'}`}
+                                    >      
+                                    <FaHeart
+                                    style={{
+                                        color: inWishlist ? 'red':'',
+                                        cursor:'pointer',
+                                    }}
+                                    size={40}
+                                    onClick={handleWish}
+                                    />
+                                    </span>
+                                    </div>
                                 <p id="product_id">Product # {product._id}</p>
                                 <hr />
                                 <div className="rating-outer">
