@@ -1,9 +1,18 @@
 const express=require('express');
-const {getAdminProducts, getProducts, getSingleProducts ,getReviews,postProducts,updateProduct,deleteProduct,createReview, deleteReview} = require('../controllers/productcontroller');
+const {getAdminProducts, 
+       getProducts, 
+       getSingleProducts ,
+       getReviews,
+       postProducts,
+       updateProduct,
+       deleteProduct,
+       createReview, 
+       deleteReview} = require('../controllers/productcontroller');
 const router=express.Router();
 const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticate')
 const multer = require('multer');
-const path = require('path')
+const path = require('path');
+const { cartValidation } = require('../controllers/orderController');
 
 const upload = multer({storage: multer.diskStorage({
     destination: function(req, file, cb) {
@@ -18,6 +27,7 @@ const upload = multer({storage: multer.diskStorage({
 router.route('/products').get(getProducts)
 router.route('/products/:id').get(getSingleProducts)
 router.route('/review').put(isAuthenticateUser,createReview)
+router.route('/validate-cart').post(cartValidation)
 
 
 

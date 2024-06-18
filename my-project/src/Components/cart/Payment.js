@@ -13,7 +13,6 @@ import { clearError as clearOrderError } from '../../slices/orderSlice'
 import Loader from '../Loader';
 import MetaData from '../MetaData';
 
-
 function Payment() {
     const stripe = useStripe();
     const elements = useElements()
@@ -22,7 +21,7 @@ function Payment() {
     const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'))
     const { user, isAuthenticated} = useSelector(state => state.authState)
     const { items: cartItem, shippingInfo } = useSelector(state => state.cartState)
-    const { error: orderError, loading } = useSelector(state => state.orderState)
+    const { error: orderError, loading} = useSelector(state => state.orderState)
     const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
     const paymentData = {
         amount: Math.round(orderInfo.totalPrice * 100), //send the payment data in cents type 100 cents make 1 dollor
@@ -53,6 +52,7 @@ function Payment() {
 
     useEffect(() => {
         validateShipping(shippingInfo, navigate)
+
         if (orderError) {
             toast(orderError, {
                 type: 'error',

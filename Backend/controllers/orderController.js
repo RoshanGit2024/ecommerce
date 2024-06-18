@@ -21,9 +21,9 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
   for(let item of orderItems){
     const product = await productModel.findById(item.product);
 
-    {/*if(product.stock < item.quantity){
+    if(product.stock < item.quantity){
       return next(new ErrorHandler(`not enough stock available for product ${product.name}`,400))
-    }*/}
+    }
     product.stock -= item.quantity
     await product.save({ validateBeforeSave: false})
   }
@@ -163,3 +163,21 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     })
    })
 
+   exports.cartValidation = catchAsyncError(async(req,res,next)=>{
+    const userCart = req.body.cart;
+    const updatedCart = []
+
+    for(let item of userCart){
+      const product = await productModel.findById(item.product); 
+      if(product){
+        if(product.stock >= item.quantity){
+          updatedCart.push(item)
+        }else if(product.stock > 0){
+          updatedCart.push({...item,quantity:product.stock})
+        }else{
+          console.log(`Product ${item.product} is out of stock and has been removed from the cart.`);
+        }
+      }
+    }
+    res.json({ updatedCart });
+   }) 

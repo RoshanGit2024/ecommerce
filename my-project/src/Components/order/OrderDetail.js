@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 
 function OrderDetail() {
     const { orderDetail={}, loading, isOrderCanceled,error } = useSelector(state => state.orderState)
-    const { shippingInfo = {}, user = {}, orderStatus = "processing", orderItems = [], totalPrice = 0, paymentInfo = {} } = orderDetail
+    const { shippingInfo = {}, user = {}, orderStatus = "processing", orderItems = [], totalPrice = 0, paymentInfo = {} ,createdAt,deliveredAt} = orderDetail
     const isPaid = paymentInfo && paymentInfo.status === "succeeded" ? true : false
     const dispatch = useDispatch()
     const { id } = useParams()
@@ -75,7 +75,7 @@ function OrderDetail() {
 
                             <h4 className="my-4">Order Status:</h4>
                         {latestUserStatus !== 'canceled'  ? (<div className={orderStatus && orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}>
-                               <OrderSteps status={orderStatus} />
+                               <OrderSteps status={orderStatus} createdAt={createdAt} deliveredAt={deliveredAt}/>
                                {orderStatus !== 'delivered' && orderStatus !== 'delivered' && <button className='btn btn-danger' 
                                 disabled={loading}
                                 onClick={()=>handleShow(orderDetail._id)}>

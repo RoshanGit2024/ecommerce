@@ -104,7 +104,7 @@ function UpdateOrder() {
                   {latestUserStatus !== 'canceled' ? (<p className={orderStatus && orderStatus.includes('delivered') ? 'greenColor' : 'redColor'}><b>{orderStatus}</b></p>) : (
                     <div>
                       <p className='redColor'><b>{latestUserStatus}</b></p>
-                      <p>Reason: <b>{reason}</b></p>
+                     {reason && <p>Reason: <b>{reason}</b></p>}
                     </div>
                   )}
 

@@ -13,6 +13,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import Dialog from '@material-ui/core/Dialog'; 
 import Button from '@material-ui/core/Button'; 
 import logo from '../Assets/logo.png'
+import { FaHeart } from "react-icons/fa";
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -53,9 +54,9 @@ function Nav() {
       <Search />
     </div>
     
-    <div className="col-12 col-md-3 mt-4 ml-0 mt-md-0 text-center">
+    <div className="col-12 col-md-3 mt-4 ml-0 mt-md-0 text-center d-flex flex-row align-items-center justify-content-around">
       {isAuthenticated ? (
-         <Dropdown className='d-inline'>
+         <Dropdown className='d-inline '>
              <Dropdown.Toggle variant='default text-white pr-5' id='dropdown-basic'>
               <figure className='avatar avatar-nav'>
                 {user.avatar ? (
@@ -94,9 +95,19 @@ function Nav() {
       : 
     <Link to={'/login'} className="btn" id="login_btn">Login</Link>
     }
+    {isAuthenticated && <Link to={"/wishlist"} >
+        <FaHeart 
+          style={{
+            color:'red',
+            cursor:'pointer',
+            marginTop:'11px'
+        }}
+        size={25}
+        />
+    </Link> }
       <Link to={'/cart'}>
-        <span id="cart" className="ml-3">
-          <FaShoppingCart size={40}/> 
+        <span id="cart" className="ml-4">
+          <FaShoppingCart size={30}/> 
         <span className="mt-1" id="cart_count">{cart.length}</span>
         </span>
       </Link>

@@ -20,13 +20,12 @@ function UserWishlist() {
             <MetaData title={'your wish list products'}/>
             <div className='container'>
                 <h1 id="products_heading">Your wishlist products</h1>
-                {items.length == 0 ? <Fragment>
+                {items.length === 0 ?
                     <div className='d-flex justify-content-center align-items-center flex-column mt-4'>
                         <p className='mb-0 mr-2'>You are having no products wish </p>
                         <span >it's simple! just tap on 🤍 to add any products on your wish list</span>
                         <Link to={'/'} className='btn btn-primary'>view products</Link>
-                    </div>
-                </Fragment> :
+                    </div>:
                 <Fragment>
                     <div className='justify-content-between'>
                     <span>Show in stock products only</span>

@@ -6,6 +6,7 @@ const orderSlice = createSlice({
         orderDetail:{},
         userOrders:[],
         adminOrders:[],
+        isOrderCreated:false,
         isOrderDeleted:false,
         isOrderUpdated:false,
         isOrderCanceled:false,
@@ -22,6 +23,7 @@ const orderSlice = createSlice({
         return{
             ...state,
             loading:false,
+            isOrderCreated:true,
             orderDetail:action.payload.order
         }
        },
