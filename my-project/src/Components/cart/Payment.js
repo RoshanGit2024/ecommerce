@@ -20,9 +20,8 @@ function Payment() {
     const navigate = useNavigate()
     const orderInfo = JSON.parse(sessionStorage.getItem('orderInfo'))
     const { user, isAuthenticated} = useSelector(state => state.authState)
-    const { items: cartItem, shippingInfo } = useSelector(state => state.cartState)
+    const { items: cartItem, shippingInfo } = useSelector(state => state.myCartState)
     const { error: orderError, loading} = useSelector(state => state.orderState)
-    const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
     const paymentData = {
         amount: Math.round(orderInfo.totalPrice * 100), //send the payment data in cents type 100 cents make 1 dollor
         shipping: {
@@ -39,7 +38,7 @@ function Payment() {
     }
 
     const order = {
-        orderItems: cartItems,
+        orderItems: cartItem,
         shippingInfo
     }
 

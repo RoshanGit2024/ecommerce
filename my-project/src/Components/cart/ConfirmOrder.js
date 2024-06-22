@@ -7,11 +7,11 @@ import Steps from './Steps'
 import { toast } from 'react-toastify'
 
 function ConfirmOrder() {
-    const { shippingInfo={}, items: cartItem } = useSelector(state => state.cartState)
+    const { shippingInfo={}, items: cartItem } = useSelector(state => state.myCartState)
     const { user, isAuthenticated } = useSelector(state => state.authState)
     const navigate = useNavigate()
-    const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
-    const itemsPrice = cartItems.reduce((acc, item) => (acc + item.price * item.quantity), 0)
+    //const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
+    const itemsPrice = cartItem.reduce((acc, item) => (acc + item.price * item.quantity), 0)
     const shippingPrice = itemsPrice > 200 ? 0 : 25;
     let taxPrice = Number(0.05 * itemsPrice);
     const totalPrice = Number(itemsPrice + shippingPrice + taxPrice).toFixed(2)
@@ -50,7 +50,7 @@ function ConfirmOrder() {
 
                     <hr />
                     <h4 className="mt-4">Your Cart Items:</h4>
-                    {cartItems.map((item,i)=> (
+                    {cartItem.map((item,i)=> (
                         <Fragment key={i}>
                             <div className="cart-item my-1">
                                 <div className="row">

@@ -3,6 +3,7 @@ import { thunk } from "redux-thunk"
 import productsReducer from "./slices/productsSlice";
 import productReducer from './slices/productSlice'
 import cartReducer from './slices/cartSlice'
+import myCartReducer from './slices/myCartSlice'
 import authReducer from './slices/authSlice'
 import orderReducer from './slices/orderSlice'
 import userReducer from './slices/userSlice'
@@ -14,6 +15,7 @@ const reducer = combineReducers({
     prodSingleState:productReducer,
     authState:authReducer,
     cartState:cartReducer,
+    myCartState:myCartReducer,
     orderState:orderReducer,
     userState:userReducer,
     wishState:wishlistReducer

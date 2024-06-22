@@ -17,7 +17,7 @@ import { FaHeart } from "react-icons/fa";
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
-  const{items:cartItems}=useSelector(state => state.cartState)
+  const{items:cartItems}=useSelector(state => state.myCartState)
   const[open,setOpen]=useState(false)
 
   const dispatch = useDispatch()
@@ -27,7 +27,6 @@ function Nav() {
   const isActive = (paths) => {
       return paths.includes(location.pathname ) ? 'active' : '';
   };
-  const cart = isAuthenticated ? cartItems.filter((item) => item.userId === user._id) : [];
 
   const handleClose =()=>{
     setOpen(false)
@@ -105,10 +104,10 @@ function Nav() {
         size={25}
         />
     </Link> }
-      <Link to={'/cart'}>
+      <Link to={'/mycart'}>
         <span id="cart" className="ml-4">
           <FaShoppingCart size={30}/> 
-        <span className="mt-1" id="cart_count">{cart.length}</span>
+        <span className="mt-1" id="cart_count">{cartItems.length}</span>
         </span>
       </Link>
     </div>

@@ -1,3 +1,4 @@
+import { toast } from "react-toastify"
 import { adminOrderFail,
          adminOrderRequest, 
          adminOrderSuccess, 
@@ -30,6 +31,11 @@ export const createOrder=order=>async(dispatch)=>{
        dispatch(createOrderSuccess(data))
     } catch (error) {
         dispatch(createOrderFail(error.response.data.message))
+        if(error.response && error.response.status === 400){
+            toast.error("item already in cart")
+          }else{
+            console.error('Error adding cart item:', error);
+          }
     }
 }
 

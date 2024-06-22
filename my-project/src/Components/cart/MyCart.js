@@ -1,17 +1,25 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { decreaseCartItemQty, removeItemFromCart, increaseCartItemQty } from '../../slices/cartSlice';
+import { decreaseCartItemQty, increaseCartItemQty } from '../../slices/myCartSlice';
 import MetaData from '../MetaData';
+import { getCartItems } from '../../actions/myCartActions';
 
-function Cart() {
-    const { items } = useSelector(state => state.cartState);
+function MyCart({userId}) {
+    const { items:cartItems, loading } = useSelector(state => state.myCartState);
     const { user, isAuthenticated } = useSelector(state => state.authState);
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const cartItems = isAuthenticated ? items.filter((item) => item.userId === user._id) : [];
-    const cartLength = cartItems.length;
+    //const cartItems = isAuthenticated ? items.filter((item) => item.userId === user._id) : [];
+   const cartLength = cartItems.length;
+
+   
+    useEffect(() => {
+        if(isAuthenticated){
+            dispatch(getCartItems(user._id));
+        }
+    }, [dispatch, user]);
     
     const increaseQty = (item) => {
         const count = item.quantity;
@@ -47,17 +55,19 @@ function Cart() {
                                                 <img src={item.image} alt={item.name} height="90" width="115" />
                                             </div>
                                             <div className="col-5 col-lg-3">
-                                                <Link to={`/product/${item.product}`}>{item.name}</Link>
+                                                <Link to={`/singleproduct/${item.product}`}>{item.name}</Link>
                                             </div>
                                             <div className="col-4 col-lg-2 mt-4 mt-lg-0">
                                                 <p id="card_item_price">${item.price}</p>
                                             </div>
                                             <div className="col-4 col-lg-3 mt-4 mt-lg-0">
                                                 <div className="stockCounter d-inline">
-                                                  {item.stock === 0 ? 
-                                                  (<span className='text-danger font-bold'>product out of stock</span>) :(<><span 
+                                                {item.stock === 0 ? 
+                                                  (<span className='text-danger font-bold'>product out of stock</span>) :(
+                                                    <>
+                                                    <span 
                                                        className="btn btn-danger minus" 
-                                                       onClick={() => decreaseQty(item)}>
+                                                       onClick={()=>decreaseQty(item)}>
                                                         -
                                                     </span>
                                                     <input 
@@ -68,14 +78,15 @@ function Cart() {
                                                     />
                                                     <span 
                                                       className="btn btn-primary plus" 
-                                                      onClick={() => increaseQty(item)}>
+                                                      onClick={()=>increaseQty(item)}>
                                                         +
-                                                    </span></>)}
+                                                    </span>
+                                                    </>)}
                                                 </div>
                                             </div>
                                             <div className="col-4 col-lg-1 mt-4 mt-lg-0">
                                                 <i id="delete_cart_item" 
-                                                   onClick={() => dispatch(removeItemFromCart(item.product))} 
+                                                   onClick={{}} 
                                                    className="fa fa-trash btn btn-danger">
                                                 </i>
                                             </div>
@@ -106,4 +117,4 @@ function Cart() {
     )
 }
 
-export default Cart;
+export default MyCart;

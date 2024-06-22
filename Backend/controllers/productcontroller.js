@@ -2,6 +2,7 @@ const productModel=require('../models/productmodel')
 const ErrorHandler = require('../utils/errorHandler')
 const catchAsyncError = require('../middlewares/catchAsyncError')
 const APIFeatures = require('../utils/apiFeatures')
+const cartModel = require('../models/cartModel')
 
 //get products API = api/v1/products
 exports.getProducts=catchAsyncError(async(req,res,next)=>{
@@ -33,10 +34,6 @@ exports.getProducts=catchAsyncError(async(req,res,next)=>{
 //get single products API = api/v1/products/:id
 exports.getSingleProducts=catchAsyncError(async(req,res,next)=>{
         const product=await productModel.findById(req.params.id).populate('reviews.user','name email avatar')
-        
-        if(!product){
-            return next(new ErrorHandler('product not found',400));
-        }
 
         res.json({
             success:true,
@@ -107,6 +104,22 @@ exports.updateProduct = catchAsyncError(async(req,res,next)=>{
     runvalidators:true
    })
     
+   await cartModel.updateMany(
+    {'items.product':req.params.id},
+    {
+        $set:{
+            'items.$[elem].name':product.name,
+            'items.$[elem].price':product.price,
+            'items.$[elem].stock':product.stock,
+            'items.$[elem].image':product.images[0].image,
+        }
+    },
+    {
+        arrayFilters:[{'elem.product':req.params.id}]
+    }
+   )
+
+
    res.status(200).json({
     success:true,
     product

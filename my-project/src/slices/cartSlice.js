@@ -5,9 +5,9 @@ import { toast } from "react-toastify";
 const cartSlice = createSlice({
     name: 'cart',
     initialState: {
-        items: localStorage.getItem('cartItems')? JSON.parse(localStorage.getItem('cartItems')):[],
-        loading:false,
-        shippingInfo: localStorage.getItem('shippingInfo')? JSON.parse(localStorage.getItem('shippingInfo')):{}
+        items: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
+        loading: false,
+        shippingInfo: localStorage.getItem('shippingInfo') ? JSON.parse(localStorage.getItem('shippingInfo')) : {}
     },
     reducers: {
         addCartItemRequest(state, action) {

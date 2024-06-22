@@ -10,7 +10,8 @@ const orderSlice = createSlice({
         isOrderDeleted:false,
         isOrderUpdated:false,
         isOrderCanceled:false,
-        loading:false
+        loading:false,
+        error:null
     },
     reducers: {
        createOrderRequest(state,action){
@@ -31,7 +32,7 @@ const orderSlice = createSlice({
         return{
             ...state,
             loading:false,
-            error:action.payload
+            error:action.payload.message
         }
        },
        clearError(state) {

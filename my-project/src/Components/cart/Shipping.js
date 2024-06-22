@@ -19,7 +19,7 @@ export const validateShipping = (shippingInfo) => {
 };
 
 function Shipping() {
-    const { shippingInfo = {} ,loading} = useSelector(state => state.cartState)
+    const { shippingInfo = {} ,loading} = useSelector(state => state.myCartState)
     const [address, setAddress] = useState(shippingInfo.address);
     const [city, setCity] = useState(shippingInfo.city)
     const [phoneNumber, setPhoneNo] = useState(shippingInfo.phoneNumber);

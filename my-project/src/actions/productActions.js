@@ -60,7 +60,9 @@ export const getProduct =id=> async(dispatch)=>{
     const {data}=await axios.get(process.env.REACT_APP_API_URL + '/products/'+id);
     dispatch(prodSingleSuccess(data)) 
   }catch(error){
-    dispatch(prodSingleFail(error.message))
+    dispatch(prodSingleFail(error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message))
   }
 }
 

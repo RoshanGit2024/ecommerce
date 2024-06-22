@@ -4,6 +4,7 @@ import { clearAuthError, login } from '../../actions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
+import { syncCartItems } from '../../actions/myCartActions'
 
 
 function Login() {
@@ -19,11 +20,12 @@ function Login() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const location = useLocation()
-    const { loading, error, isAuthenticated } = useSelector(state => state.authState)
+    const { loading, error, isAuthenticated ,user} = useSelector(state => state.authState)
     const redirect = location.search ? '/' + location.search.split('=')[1] : '/';
 
     useEffect(() => {
         if (isAuthenticated) {
+            dispatch(syncCartItems(user._id));
             navigate(redirect)
             setAttempt(0)
         } else {

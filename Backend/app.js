@@ -14,6 +14,7 @@ const products=require('./Routes/product');
 const auth = require('./Routes/auth')
 const orders=require('./Routes/order');
 const payment=require('./Routes/payment')
+const cart=require('./Routes/cart')
 
   
   
@@ -32,6 +33,7 @@ app.use('/api/v1/',products);
 app.use('/api/v1/',auth);
 app.use('/api/v1/',orders);
 app.use('/api/v1/',payment);
+app.use('/api/v1/',cart);
 app.use(errorMiddleware)
 
 const server = app.listen(process.env.PORT,()=>{

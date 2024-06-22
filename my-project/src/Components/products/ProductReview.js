@@ -13,7 +13,7 @@ function ProductReview({reviews}) {
          </div>
          <span className="review-time">{String(review.postedAt).substring(0,10)}</span>
          <div className='name-profle'>
-          {review.user.avatar ? (<img src={review.user.avatar} alt={review.user.name} className="profile-pic" />) : (
+          { review.user.avatar ? (<img src={review.user.avatar} alt={review.user.name} className="profile-pic" />) : (
             <Avatar style={{height:'45px',width:'45px'}} name={review.user.name}/>
           )}
          <p className="review_user font-bold ml-2">{review.user.name}</p>

@@ -1,13 +1,32 @@
-const orderModel=require('../models/orderModel')
-const productModel=require('../models/productmodel')
+const orderModel = require('../models/orderModel')
+const productModel = require('../models/productmodel')
 const catchAsyncError = require('../middlewares/catchAsyncError');
 const ErrorHandler = require('../utils/errorHandler')
+const cartModel = require('../models/cartModel')
 
 //create order - /api/v1/order
-exports.createOrder=catchAsyncError(async(req,res,next)=>{
-    const orderModel=require('../models/orderModel')
-    //const productModel=require('../models/productmodel')
-    
+
+//updating product in cart items 
+
+const updateCartStock = async (productId, newStockCount) =>{
+  try {
+    const carts = await cartModel.find({'items.product':productId}) 
+    for(let cart of carts){
+      cart.items.forEach(item => {
+        if(item.product.toString() === productId.toString()){
+          item.stock = newStockCount
+        }
+      })
+      await cart.save()
+    }
+  } catch (error) {
+      console.log("error occurd while updating cart stock:",error)
+  }
+}
+exports.createOrder = catchAsyncError(async (req, res, next) => {
+  const orderModel = require('../models/orderModel')
+  //const productModel=require('../models/productmodel')
+
   const {
     orderItems,
     shippingInfo,
@@ -16,16 +35,27 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     shippingPrice,
     totalPrice,
     paymentInfo
-  }=req.body;
-
-  for(let item of orderItems){
+  } = req.body;
+  if (orderItems.length === 0) {
+    return next(new ErrorHandler(`Order items do not exist`, 404));
+  }
+  for (let item of orderItems) {
     const product = await productModel.findById(item.product);
 
-    if(product.stock < item.quantity){
-      return next(new ErrorHandler(`not enough stock available for product ${product.name}`,400))
+    if (product.stock < item.quantity) {
+      return next(new ErrorHandler(`not enough stock available for product ${product.name}`, 400))
     }
     product.stock -= item.quantity
-    await product.save({ validateBeforeSave: false})
+    await product.save({ validateBeforeSave: false })
+
+    //updating stock in the cart
+    await updateCartStock(product._id, product.stock)
+  }
+  const userId = req.user.id;
+  const cart = await cartModel.findOne({ userId });
+
+  if (!cart || cart.items.length === 0) {
+    return next(new ErrorHandler(`order items not exist`, 404))
   }
 
   const order = await orderModel.create({
@@ -36,148 +66,148 @@ exports.createOrder=catchAsyncError(async(req,res,next)=>{
     shippingPrice,
     totalPrice,
     paymentInfo,
-    paidAt:Date.now(),
-    user:req.user.id
+    paidAt: Date.now(),
+    user: req.user.id
   })
-
-       res.status(200).json({
-        success:true,
-        order
-       })
-    })
-
-    exports.getSigleOrder = catchAsyncError(async(req,res,next)=>{
-        const order = await orderModel.findById(req.params.id).populate('user','name email')
-        if(!order){
-          return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
-        }
-        res.status(200).json({
-          success:true,
-          order
-        })
-    })
-    
-
-    exports.myOrders = catchAsyncError(async(req,res,next)=>{
-      const orders = await orderModel.find({user: req.user.id})
-
-      res.status(200).json({
-        success:true,
-        orders
-      })
+  await cartModel.updateOne({ userId }, { $set: { items: [] } })
+  res.status(200).json({
+    success: true,
+    order
   })
-
-  //Admin: Get All orders - api/v1/orders
-   exports.orders = catchAsyncError(async(req,res,next)=>{
-    const orders = await orderModel.find()
-
-    let totalAmount = 0;
-    orders.forEach(order =>{
-      totalAmount += order.totalPrice
-    })
-
-    res.status(200).json({
-      success:true,
-      totalAmount,
-      orders
-    })
 })
 
-   //updating product stock
-   exports.UpdateOrder = catchAsyncError(async(req,res,next)=>{
-    const order = await orderModel.findById(req.params.id);
+exports.getSigleOrder = catchAsyncError(async (req, res, next) => {
+  const order = await orderModel.findById(req.params.id).populate('user', 'name email')
+  if (!order) {
+    return next(new ErrorHandler(`order not found with this id:${req.params.id}`, 404))
+  }
+  res.status(200).json({
+    success: true,
+    order
+  })
+})
 
-    if(order.orderStatus == 'delivered'){
-       return next(new ErrorHandler('order has been already delivered',400))
+
+exports.myOrders = catchAsyncError(async (req, res, next) => {
+  const orders = await orderModel.find({ user: req.user.id })
+
+  res.status(200).json({
+    success: true,
+    orders
+  })
+})
+
+//Admin: Get All orders - api/v1/orders
+exports.orders = catchAsyncError(async (req, res, next) => {
+  const orders = await orderModel.find()
+
+  let totalAmount = 0;
+  orders.forEach(order => {
+    totalAmount += order.totalPrice
+  })
+
+  res.status(200).json({
+    success: true,
+    totalAmount,
+    orders
+  })
+})
+
+//updating product stock
+exports.UpdateOrder = catchAsyncError(async (req, res, next) => {
+  const order = await orderModel.findById(req.params.id);
+
+  if (order.orderStatus == 'delivered') {
+    return next(new ErrorHandler('order has been already delivered', 400))
+  }
+
+  //updating the product stock of each  order item
+  order.orderItems.forEach(async orderItem => {
+    await updateStock(orderItem.product, orderItem.quantity)
+  })
+
+  order.orderStatus = req.body.orderStatus;
+  order.deliveredAt = Date.now()
+  await order.save()
+
+  res.status(200).json({
+    success: true
+  })
+})
+
+async function updateStock(productId, quantity) {
+  const product = await productModel.findById(productId);
+  product.stock -= quantity;
+  product.save({ validateBeforeSave: false })
+}
+
+//Admin : Delete order - api/v1/order/:id
+
+exports.deleteOrder = catchAsyncError(async (req, res, next) => {
+  const order = await orderModel.findById(req.params.id);
+  if (!order) {
+    return next(new ErrorHandler(`order not found with this id:${req.params.id}`, 404))
+  }
+
+  for (let item of order.orderItems) {
+    const product = await productModel.findById(item.product);
+    if (product) {
+      product.stock += item.quantity;
+      await product.save()
     }
+  }
 
-    //updating the product stock of each  order item
-    order.orderItems.forEach(async orderItem =>{
-      await updateStock(orderItem.product,orderItem.quantity)
-    })
+  await orderModel.deleteOne({ _id: req.params.id });
+  res.status(200).json({
+    success: true,
+  })
+})
 
-    order.orderStatus = req.body.orderStatus;
-    order.deliveredAt=Date.now()
-    await order.save()
+//cancel order -api/v1/order/:id/cancel 
 
-    res.status(200).json({
-      success:true
-    })
-   })
+exports.cancelOrder = catchAsyncError(async (req, res, next) => {
+  const { reason } = req.body;
+  const order = await orderModel.findById(req.params.id);
+  if (!order) {
+    return next(new ErrorHandler(`order not found with this id:${req.params.id}`, 404))
+  }
+  if (['delivered', 'shipped'].includes(order.orderStatus.toLowerCase())) {
+    return next(new ErrorHandler('Cannot cancel a delivered or shipped order', 400))
+  }
 
-   async function updateStock(productId,quantity){
-    const product = await productModel.findById(productId);
-    product.stock -= quantity;
-    product.save({validateBeforeSave:false})
-   }
+  //updating stock
 
-   //Admin : Delete order - api/v1/order/:id
-
-   exports.deleteOrder = catchAsyncError(async(req,res,next)=>{
-    const order = await orderModel.findById(req.params.id);
-    if(!order){
-      return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
+  for (let item of order.orderItems) {
+    const product = await productModel.findById(item.product);
+    if (product) {
+      product.stock += item.quantity;
+      await product.save()
     }
+  }
+  order.status.push({ userStatus: 'canceled', reason })
+  await order.save();
 
-    for(let item of order.orderItems){
-      const product = await productModel.findById(item.product); 
-      if(product){
-        product.stock += item.quantity;
-        await product.save()
+  res.status(200).json({
+    success: true,
+    order
+  })
+})
+
+exports.cartValidation = catchAsyncError(async (req, res, next) => {
+  const userCart = req.body.cart;
+  const updatedCart = []
+
+  for (let item of userCart) {
+    const product = await productModel.findById(item.product);
+    if (product) {
+      if (product.stock >= item.quantity) {
+        updatedCart.push(item)
+      } else if (product.stock > 0) {
+        updatedCart.push({ ...item, quantity: product.stock })
+      } else {
+        console.log(`Product ${item.product} is out of stock and has been removed from the cart.`);
       }
     }
-
-    await orderModel.deleteOne({ _id: req.params.id });
-    res.status(200).json({
-      success:true,
-    })
-   })
-
-   //cancel order -api/v1/order/:id/cancel 
-
-   exports.cancelOrder = catchAsyncError(async(req,res,next)=>{
-    const{reason}=req.body;
-    const order = await orderModel.findById(req.params.id);
-    if(!order){
-      return next(new ErrorHandler(`order not found with this id:${req.params.id}`,404))
-    }
-    if(['delivered','shipped'].includes(order.orderStatus.toLowerCase())){
-      return next(new ErrorHandler('Cannot cancel a delivered or shipped order',400))
-    }
-
-    //updating stock
-
-    for(let item of order.orderItems){
-      const product = await productModel.findById(item.product); 
-      if(product){
-        product.stock += item.quantity;
-        await product.save()
-      }
-    }
-    order.status.push({userStatus:'canceled',reason})
-    await order.save();
-
-    res.status(200).json({
-      success:true,
-      order
-    })
-   })
-
-   exports.cartValidation = catchAsyncError(async(req,res,next)=>{
-    const userCart = req.body.cart;
-    const updatedCart = []
-
-    for(let item of userCart){
-      const product = await productModel.findById(item.product); 
-      if(product){
-        if(product.stock >= item.quantity){
-          updatedCart.push(item)
-        }else if(product.stock > 0){
-          updatedCart.push({...item,quantity:product.stock})
-        }else{
-          console.log(`Product ${item.product} is out of stock and has been removed from the cart.`);
-        }
-      }
-    }
-    res.json({ updatedCart });
-   }) 
+  }
+  res.json({ updatedCart });
+}) 

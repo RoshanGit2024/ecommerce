@@ -8,7 +8,6 @@ import { Carousel, Modal } from 'react-bootstrap';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import MetaData from '../MetaData';
-import { addcartItems } from '../../actions/cartActions';
 import { clearReviewSubmited, clearError, clearProduct } from '../../slices/productSlice';
 import ProductReview from './ProductReview';
 import { FaHeart } from "react-icons/fa";
@@ -62,13 +61,6 @@ function ProductDetail() {
         }
     }, [dispatch, id, isReviewSubmited, error, cartLoading]);
 
-    function handleCart() {
-        if (isAuthenticated) {
-            dispatch(addcartItems(user._id, product._id, quantity));
-        } else {
-            navigate('/login')
-        }
-    }
 
     const increaseQty = () => {
         const count = document.querySelector('.count');
@@ -145,7 +137,7 @@ function ProductDetail() {
                                     id="cart_btn"
                                     className="btn btn-primary d-inline ml-4"
                                     disabled={product.stock == 0 ? true : false}
-                                    onClick={handleCart}>Add to Cart</button>
+                                    >Add to Cart</button>
                                 <hr />
                                 <p>Status: <span id="stock_status text-success" className={product.stock > 0 ? 'text-success' : 'text-danger'} >{product.stock > 0 ? 'In stock' : 'Out of stock'}</span></p>
                                 <hr />
