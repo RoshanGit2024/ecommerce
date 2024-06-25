@@ -1,22 +1,31 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { decreaseCartItemQty, increaseCartItemQty } from '../../slices/myCartSlice';
+import { clearCartDeleted, clearError, decreaseCartItemQty, increaseCartItemQty, removeItemFromCart } from '../../slices/myCartSlice';
 import MetaData from '../MetaData';
-import { getCartItems } from '../../actions/myCartActions';
+import { deleteCartItem, getCartItems } from '../../actions/myCartActions';
+import { BiError } from "react-icons/bi";
+import { toast } from 'react-toastify';
 
 function MyCart({userId}) {
-    const { items:cartItems, loading } = useSelector(state => state.myCartState);
+    const { items:cartItems, loading ,isCartDeleted,error} = useSelector(state => state.myCartState);
     const { user, isAuthenticated } = useSelector(state => state.authState);
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const[cartError,setCarterror]=useState("")
 
-    //const cartItems = isAuthenticated ? items.filter((item) => item.userId === user._id) : [];
    const cartLength = cartItems.length;
 
    
     useEffect(() => {
-        if(isAuthenticated){
+        if (error) {
+            toast(error, {
+                type: 'error',
+                onOpen: () => { dispatch(clearError()) }
+            });
+            return
+        }
+        if(isAuthenticated && user){
             dispatch(getCartItems(user._id));
         }
     }, [dispatch, user]);
@@ -34,7 +43,21 @@ function MyCart({userId}) {
     }
 
     const checkoutHandler = () => {
+        const outOfStockItems = cartItems.filter(item => item.stock === 0);
+        if(outOfStockItems.length > 0){
+            setCarterror("some items from your cart is out of stock, please remove them to proceed")
+            return;
+        }
         navigate('/login?redirect=shipping');
+    }
+
+    const handleCartDelete =(productId)=> {
+     if(isAuthenticated && user){
+         dispatch(deleteCartItem(user._id,productId))
+     }else{
+         dispatch(removeItemFromCart(productId))
+         toast.success("cart item removed successfully!")
+     }
     }
 
     return (
@@ -43,6 +66,11 @@ function MyCart({userId}) {
             {cartItems.length == 0 ? 
                 <h2 className="mt-5">Your Cart is Empty</h2> :
                 <Fragment>
+                    {cartError && (
+                        <div className='alert alert-danger justify-content-center alert-medium mt-3 mx-auto' role='alert'>
+                            <BiError size={20}/> {cartError}<b>!</b>
+                        </div>
+                    )}
                     <h2 className="mt-5">Your Cart: <b>{cartLength} items</b></h2>
                     <div className="row d-flex justify-content-between">
                         <div className="col-12 col-lg-8">
@@ -86,7 +114,7 @@ function MyCart({userId}) {
                                             </div>
                                             <div className="col-4 col-lg-1 mt-4 mt-lg-0">
                                                 <i id="delete_cart_item" 
-                                                   onClick={{}} 
+                                                   onClick={()=>handleCartDelete(item.product)} 
                                                    className="fa fa-trash btn btn-danger">
                                                 </i>
                                             </div>

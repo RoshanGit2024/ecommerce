@@ -1,15 +1,18 @@
 import React, { Fragment, useEffect } from 'react'
 import MetaData from '../MetaData'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import { validateShipping } from './Shipping'
 import Steps from './Steps'
 import { toast } from 'react-toastify'
+import { clearError } from '../../slices/orderSlice'
 
 function ConfirmOrder() {
     const { shippingInfo={}, items: cartItem } = useSelector(state => state.myCartState)
     const { user, isAuthenticated } = useSelector(state => state.authState)
+    const { error:orderError } = useSelector(state => state.orderState)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     //const cartItems = isAuthenticated ? cartItem.filter((item) => item.userId === user._id) : [];
     const itemsPrice = cartItem.reduce((acc, item) => (acc + item.price * item.quantity), 0)
     const shippingPrice = itemsPrice > 200 ? 0 : 25;
@@ -32,6 +35,13 @@ function ConfirmOrder() {
 
 
     useEffect(() => {
+        if (orderError) {
+            toast(orderError, {
+                type: 'error',
+                onOpen: () => { dispatch(clearError()) }
+            });
+            return
+        }
         if (!validateShipping(shippingInfo)) {
             navigate('/shipping')
         }

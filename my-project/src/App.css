@@ -835,3 +835,7 @@ ul.CTAs a {
   margin-top: 20px;
   font-size: 14px;
 }
+
+.alert-medium{
+  max-width:600px;
+}

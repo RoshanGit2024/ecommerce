@@ -144,7 +144,7 @@ const orderSlice = createSlice({
        clearOrderDeleted(state,action){
         return{
             ...state,
-            isOrderDeleted:false,
+            isOrderDeleted:false
         }
        },
        clearOrderUpdated(state,action){

@@ -8,7 +8,8 @@ const initialState = {
     items: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : [],
     loading: false,
     shippingInfo: localStorage.getItem('shippingInfo') ? JSON.parse(localStorage.getItem('shippingInfo')) : {},
-    error:null
+    isCartDeleted:false,
+    error: null
 }
 const myCartSlice = createSlice({
     name: 'cart',
@@ -25,15 +26,26 @@ const myCartSlice = createSlice({
             }
             localStorage.setItem('cartItems', JSON.stringify(state.items));
         },
+        addCartToData(state,action){
+            state.items = action.payload
+        },
         setLoading(state, action) {
             state.loading = action.payload;
         },
         setCartItems(state, action) {
             state.items = action.payload;
         },
+        deleteCartItemSuccess(state, action) {
+            state.items = state.items.filter(item => item.product !== action.payload);
+            state.isCartDeleted = true
+        },
+        setError(state, action) {
+            state.error=action.payload;
+            state.isCartDeleted = false
+        },
         increaseCartItemQty(state, action) {
             state.items = state.items.map(item => {
-                if(item.product == action.payload) {
+                if (item.product == action.payload) {
                     item.quantity = item.quantity + 1
                 }
                 return item;
@@ -43,41 +55,46 @@ const myCartSlice = createSlice({
         },
         decreaseCartItemQty(state, action) {
             state.items = state.items.map(item => {
-                if(item.product == action.payload) {
+                if (item.product == action.payload) {
                     item.quantity = item.quantity - 1
                 }
                 return item;
             })
             localStorage.setItem('cartItems', JSON.stringify(state.items));
 
+        },
+        removeItemFromCart(state, action) {
+            const filterItems = state.items.filter(item => {
+                return item.product !== action.payload
+            })
+            localStorage.setItem('cartItems', JSON.stringify(filterItems));
+            return {
+                ...state,
+                items: filterItems
+            }
+        },
+        clearCartDeleted(state,action){
+            state.isCartDeleted = false;
+        },
+        clearError(state,action){
+            state.error = null
         }
     }
-});
+})
 
 const { actions, reducer } = myCartSlice
-export const { 
-               addToCart,
-               setLoading,
-               setCartItems,
-               increaseCartItemQty,
-               decreaseCartItemQty
-            } = actions
-
-            export const addToCartDatabase = (userId, item) => async (dispatch) => {
-                try {
-                    dispatch(setLoading(true));
-                    const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/addcart`, { userId, item });
-                    dispatch(addToCart(item)); // Update Redux state with the new item
-                } catch (error) {
-                    if (error.response && error.response.status === 400) {
-                        toast.error("Item already exists in the cart");
-                    } else {
-                        console.error('Error adding cart item:', error);
-                        toast.error("Error adding item to cart");
-                    }
-                } finally {
-                    dispatch(setLoading(false));
-                }
-            };
+export const {
+    addToCart,
+    setLoading,
+    setCartItems,
+    increaseCartItemQty,
+    decreaseCartItemQty,
+    deleteCartItemSuccess,
+    setError,
+    addCartToData,
+    removeItemFromCart,
+    clearCartDeleted,
+    clearError
+} = actions
 
 export default reducer

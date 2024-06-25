@@ -30,7 +30,7 @@ const productSlice = createSlice({
             return {
                 ...state,
                 loading: false,
-                error: action.payload.message
+                error: action.payload
             }
         },
         createReviewRequest(state, action) {

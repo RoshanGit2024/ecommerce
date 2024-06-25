@@ -9,7 +9,6 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import Cart from './Components/cart/Cart';
 import { HelmetProvider } from 'react-helmet-async'
-import ProductDetail from './Components/products/ProductDetail';
 import ProductSearch from './Components/products/ProductSearch';
 import Login from './Components/user/Login';
 import Register from './Components/user/Register';
@@ -84,11 +83,6 @@ function App() {
               <Route
                 path='/search/:keyword'
                 element={<ProductSearch />}
-              />
-
-              <Route
-                path='/product/:id'
-                element={<ProductDetail />}
               />
      
             {/*test pro detail*/}

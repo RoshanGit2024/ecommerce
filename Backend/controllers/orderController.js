@@ -2,7 +2,8 @@ const orderModel = require('../models/orderModel')
 const productModel = require('../models/productmodel')
 const catchAsyncError = require('../middlewares/catchAsyncError');
 const ErrorHandler = require('../utils/errorHandler')
-const cartModel = require('../models/cartModel')
+const cartModel = require('../models/cartModel');
+const sendEmail = require('../utils/Email');
 
 //create order - /api/v1/order
 
@@ -51,12 +52,13 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     //updating stock in the cart
     await updateCartStock(product._id, product.stock)
   }
+  
   const userId = req.user.id;
   const cart = await cartModel.findOne({ userId });
 
-  if (!cart || cart.items.length === 0) {
+  {/*if (!cart || cart.items.length === 0) {
     return next(new ErrorHandler(`order items not exist`, 404))
-  }
+  }*/}
 
   const order = await orderModel.create({
     orderItems,
@@ -69,10 +71,27 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     paidAt: Date.now(),
     user: req.user.id
   })
+  let mail = req.user.email
+  const message =  `Your order has been confirmed, please check your order id follows to track your order\n\n
+        order Id:${order._id}`
+  try{
+    sendEmail({
+     email:mail,
+     subject:"Order completed",
+     message
+    })
+
+    res.status(200).json({
+     success:true,
+     message:`Email sent to ${mail}`
+    })
+  }catch(error){
+     return next(new ErrorHandler(error.message),500)
+  } 
   await cartModel.updateOne({ userId }, { $set: { items: [] } })
   res.status(200).json({
     success: true,
-    order
+    order,
   })
 })
 

@@ -7,7 +7,8 @@ const {getAdminProducts,
        updateProduct,
        deleteProduct,
        createReview, 
-       deleteReview} = require('../controllers/productcontroller');
+       deleteReview,
+       relatedProducts} = require('../controllers/productcontroller');
 const router=express.Router();
 const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticate')
 const multer = require('multer');
@@ -26,12 +27,13 @@ const upload = multer({storage: multer.diskStorage({
   
 router.route('/products').get(getProducts)
 router.route('/products/:id').get(getSingleProducts)
+router.route('/products/:id/related').get(relatedProducts)
 router.route('/review').put(isAuthenticateUser,createReview)
 router.route('/validate-cart').post(cartValidation)
 
 
 
-//admin routes
+//admin API
 router.route('/admin/products/new').post(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), postProducts)
 router.route('/admin/products').get(isAuthenticateUser, authorizeRoles('admin'), getAdminProducts)
 router.route('/admin/products/:id').delete(isAuthenticateUser, authorizeRoles('admin'), deleteProduct)
