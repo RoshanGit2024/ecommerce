@@ -31,7 +31,10 @@ function UpdateProduct() {
               'Sports',
               'Outdoor',
               'Home',
-              'Accessories'
+              'Accessories',
+              'Bags & Luggage',
+              'Music & Entertainment',
+              'Fashion & Accessories'
     ];
   
     const navigate = useNavigate()

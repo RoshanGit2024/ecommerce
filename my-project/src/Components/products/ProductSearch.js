@@ -36,7 +36,10 @@ function ProductSearch() {
     'Sports',
     'Outdoor',
     'Home',
-    'Accessories'
+    'Accessories',
+    'Bags & Luggage',
+    'Music & Entertainment',
+    'Fashion & Accessories'
   ]
 
   useEffect(() => {
@@ -53,10 +56,10 @@ function ProductSearch() {
       {loading ? (<Loader />) : error ? (<Errorcomp message={error} />) :
         <Fragment>
           <MetaData title={'search products'} />
-          <h1 id='product_heading'>search result</h1>
-          <section id="products" className="container mt-5">
+          <h1 id='product_heading mt-2'>{products && products.length} results found</h1>
+          <section id="products" className="search-container mt-5">
             <div className="row">
-              <div className='col-6 col-md-3 mb-5 mt-5'>
+              <div className='col-6 col-md-3 mb-5 filter-section'>
 
                 {/*filtering with price*/}
                 <div className='mt-1'> 
@@ -110,38 +113,8 @@ function ProductSearch() {
                     )}
                   </ul>
                 </div>
-                <hr className='my-5'/>
-                {/*filtering with ratings*/}
-                <div className='mt-5'>
-                  <h3 className='mb-2'>Ratings</h3>
-                  <ul className='pl-0'>
-                    {[5,4,3,2,1].map(star =>
-                      <li
-                        style={{
-                          cursor: 'pointer',
-                          listStyleType: 'none',
-                        }}
-                        key={star}
-                        onClick={() => {
-                          setRating(star)
-                        }}
-                      >
-                        <div className='rating-outer'>
-                           <div 
-                           className='rating-inner'
-                           style={{
-                            width:`${star * 20}%`
-                           }}
-                           >
-
-                           </div>
-                        </div>
-                      </li>
-                    )}
-                  </ul>
-                </div>
               </div>
-              <div className='col-6 col-md-9'>
+              <div className='col-6 col-md-9 product-grid'>
                 <div className='row'>
                   {products && products.length > 0 ? (
                     products.map((product) => (

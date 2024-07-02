@@ -3,10 +3,12 @@ const ErrorHandler = require('../utils/errorHandler')
 const catchAsyncError = require('../middlewares/catchAsyncError')
 const APIFeatures = require('../utils/apiFeatures')
 const cartModel = require('../models/cartModel')
+const wishlistModel = require('../models/wishlistModel')
+const sendEmail = require('../utils/Email');
 
 //get products API = api/v1/products
 exports.getProducts = catchAsyncError(async (req, res, next) => {
-    const resPerPage = 3
+    const resPerPage = req.query.limit ? parseInt(req.query.limit) : 3;
 
     let buildQuery = () => {
         return new APIFeatures(productModel.find(), req.query).search().filter()
@@ -19,8 +21,13 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
     if (filterProductsCount !== totalProductsCount) {
         productsCount = filterProductsCount
     }
+    let products;
+    if (req.query.page) {
+        products = await buildQuery().paginate(resPerPage).query;
+    } else {
+        products = await buildQuery().query;
+    }
 
-    const products = await buildQuery().paginate(resPerPage).query;
     //await new Promise(resolve => setTimeout(resolve,3000))
     //return next(new ErrorHandler('Unable to send products',400))
     res.json({
@@ -135,6 +142,21 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
         }
     )
 
+    await wishlistModel.updateMany(
+        { 'wishProducts.productId': req.params.id },
+        {
+            $set: {
+                'wishProducts.$[elem].name': product.name,
+                'wishProducts.$[elem].price': product.price,
+                'wishProducts.$[elem].stock': product.stock,
+                'wishProducts.$[elem].image': product.images[0].image,
+            }
+        },
+        {
+            arrayFilters: [{ 'elem.productId': req.params.id }]
+        }
+    )
+
 
     res.status(200).json({
         success: true,
@@ -144,7 +166,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
 
 //Delete product - api/v1/products/:id
 exports.deleteProduct = async (req, res, next) => {
-    const product = await productModel.findByIdAndDelete(req.params.id )
+    const product = await productModel.findByIdAndDelete(req.params.id)
 
     if (!product) {
         return res.status(404).json({
@@ -249,10 +271,10 @@ exports.deleteReview = catchAsyncError(async (req, res, next) => {
         ratings
     })
 
-    res.status(200).json({
-        success: true
-    })
-});
+        res.status(200).json({
+            success: true
+        })
+    });
 
 
 //Get admin products - api/v1/admin/products
@@ -265,3 +287,47 @@ exports.getAdminProducts = catchAsyncError(async (req, res, next) => {
     })
 })
 
+//add wish list products - api/v1/wishlist/add
+
+exports.toggleWish = catchAsyncError(async (req, res, next) => {
+    const { userId, productId } = req.body;
+    let wishlist = await wishlistModel.findOne({ userId })
+    if (!wishlist) {
+        wishlist = new wishlistModel({ userId, wishProducts: [] })
+    }
+    const productIndex = wishlist.wishProducts.findIndex(p => p.productId.equals(productId))
+    if (productIndex > -1) {
+        wishlist.wishProducts.splice(productIndex, 1)
+    } else {
+        const product = await productModel.findById(productId)
+        if (!product) {
+            return next(new ErrorHandler('product not found', 404))
+        }
+        wishlist.wishProducts.push({
+            name:product.name,
+            image:product.images[0].image,
+            price:product.price,
+            stock:product.stock,
+            productId:product._id,
+            userId:userId
+        })
+    }
+    await wishlist.save();
+    res.status(200).json({
+        success: true,
+        wishes:wishlist.wishProducts
+    });
+})
+
+//get wishlist - /api/v1/
+exports.getWishList = catchAsyncError(async (req, res,next) => {
+    const { userId } = req.params;
+    let wishlist = await wishlistModel.findOne({ userId })
+        if(!wishlist){
+            return next(new ErrorHandler(`wishlist not found`,404))
+        }
+        res.status(200).json({
+            success:true,
+            wishprods:wishlist.wishProducts
+        })
+});

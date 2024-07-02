@@ -49,6 +49,7 @@ function MyCart({userId}) {
             return;
         }
         navigate('/login?redirect=shipping');
+        setCarterror("")
     }
 
     const handleCartDelete =(productId)=> {
@@ -67,7 +68,7 @@ function MyCart({userId}) {
                 <h2 className="mt-5">Your Cart is Empty</h2> :
                 <Fragment>
                     {cartError && (
-                        <div className='alert alert-danger justify-content-center alert-medium mt-3 mx-auto' role='alert'>
+                        <div className='alert alert-danger text-white bg-danger justify-content-center alert-medium mt-3 mx-auto' role='alert'>
                             <BiError size={20}/> {cartError}<b>!</b>
                         </div>
                     )}

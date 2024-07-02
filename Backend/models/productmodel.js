@@ -41,7 +41,10 @@ const productSchema=new mongoose.Schema({
             'Sports',
             'Outdoor',
             'Home',
-            'Accessories'
+            'Accessories',
+            'Bags & Luggage',
+            'Music & Entertainment',
+            'Fashion & Accessories'
         ],
         message:"please select correct category",
     }

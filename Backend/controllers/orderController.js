@@ -211,22 +211,3 @@ exports.cancelOrder = catchAsyncError(async (req, res, next) => {
     order
   })
 })
-
-exports.cartValidation = catchAsyncError(async (req, res, next) => {
-  const userCart = req.body.cart;
-  const updatedCart = []
-
-  for (let item of userCart) {
-    const product = await productModel.findById(item.product);
-    if (product) {
-      if (product.stock >= item.quantity) {
-        updatedCart.push(item)
-      } else if (product.stock > 0) {
-        updatedCart.push({ ...item, quantity: product.stock })
-      } else {
-        console.log(`Product ${item.product} is out of stock and has been removed from the cart.`);
-      }
-    }
-  }
-  res.json({ updatedCart });
-}) 

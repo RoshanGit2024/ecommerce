@@ -3,36 +3,69 @@ import { createSlice } from "@reduxjs/toolkit";
 const wishlistSlice = createSlice({
     name:'wishlist',
     initialState:{
-        items:localStorage.getItem('wishlistItems') ? JSON.parse(localStorage.getItem('wishlistItems')):[],
+        wishItems:[],
         loading:false,
+        isWishlistUpdated:false
     },
     reducers:{
-        addWishlistRequest(state,action){
-            state.loading = true;
-        },
-        toggleWishlistItem(state,action){
-            const item = action.payload;
-            const itemIndex = state.items.findIndex(i => i.product === item.product && i.userId === item.userId)
-
-            if(itemIndex !== -1){
-                state.items = state.items.filter(i => !(i.product === item.product && i.userId === item.userId))
-            }else{
-                state.items.push(item)
+        toggleWishRequest(state, action) {
+            return {
+                ...state,
+                loading: true,
             }
-            localStorage.setItem('wishlistItems',JSON.stringify(state.items))        
-            state.loading=false;
         },
-        removeWishlist(state,action){
-            const filteredItems = state.items.filter(item => item.product !== action.payload);
-            localStorage.setItem('wishlistItems',JSON.stringify(filteredItems));
-            state.items = filteredItems;
+        toggleWishSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                wishItems: action.payload,
+                isWishlistUpdated:true,
+            }
+        },
+        toggleWishFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+                isWishlistUpdated:false
+            }
+        },
+        wishlistProdRequest(state, action) {
+            return {
+                ...state,
+                loading: true,
+            }
+        },
+        wishlistProdSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                wishItems: action.payload,
+            }
+        },
+        wishlistProdFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        },
+        clearError(state,action){
+            return {
+                ...state,
+                error:null
+            }
         }
     }
 })
 const{actions,reducer}=wishlistSlice;
 export const{
-       addWishlistRequest,
-       toggleWishlistItem,
-       removeWishlist
+       toggleWishFail,
+       toggleWishRequest,
+       toggleWishSuccess,
+       wishlistProdFail,
+       wishlistProdRequest,
+       wishlistProdSuccess,
+       clearError
 } =actions;
 export default reducer;

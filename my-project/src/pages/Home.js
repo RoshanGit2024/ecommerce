@@ -7,6 +7,7 @@ import Loader from '../Components/Loader';
 import { toast } from 'react-toastify';
 import Errorcomp from '../Components/Errorcomp';
 import Pagination from 'react-js-pagination'
+import ProductSlider from '../Components/products/ProductSlider';
 
 function Home() {
   const dispatch = useDispatch();

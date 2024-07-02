@@ -51,6 +51,12 @@ function Sidebar() {
                         </Link>
                     </li>
 
+                    <li>
+                        <Link to={'/admin/notification'} className={isActive('/admin/notification')}>
+                            <i className="fa fa-bell"></i> notification
+                        </Link>
+                    </li>
+
                 </ul>
             </nav>
         </div>

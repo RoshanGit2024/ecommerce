@@ -21,7 +21,8 @@ exports.syncCartitems=catchAsyncError(async(req,res,next)=>{
         await cart.save()
         res.status(200).json({ message: 'Cart synced successfully' });
  })
-
+ 
+ //adding cart items
  exports.addCartItem = catchAsyncError(async (req, res,next) => {
     const { userId, item } = req.body;
         const cart = await cartModel.findOne({ userId })
@@ -41,7 +42,8 @@ exports.syncCartitems=catchAsyncError(async(req,res,next)=>{
             items: cart.items  
         });
 })
-
+ 
+//get cart items
  exports.getCartItems = catchAsyncError(async (req, res,next) => {
     const { userId } = req.params;
         const cart = await cartModel.findOne({ userId })
@@ -54,6 +56,7 @@ exports.syncCartitems=catchAsyncError(async(req,res,next)=>{
         })
 });
 
+//deleting items from cart
 exports.deleteCart = catchAsyncError(async (req, res,next) => {
     const { userId, productId } = req.body;
         const cart = await cartModel.findOne({ userId })

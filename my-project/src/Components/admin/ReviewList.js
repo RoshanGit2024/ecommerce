@@ -57,7 +57,7 @@ function ReviewList() {
             data.rows.push({
                 id: review._id,
                 rating: review.rating,
-                user: review.user.name,
+                user: review.user ? review.user.name:<p className='text-danger'>user not exist</p>,
                 comment:review.comment,
                 actions: (
                     <Fragment>

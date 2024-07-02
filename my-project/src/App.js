@@ -42,6 +42,7 @@ import ResetPassword from './Components/user/ResetPassword';
 import UserWishlist from './Components/user/UserWishlist';
 import MyCart from './Components/cart/MyCart';
 import SingleProduct from './Components/products/SingleProduct';
+import AdminNotification from './Components/admin/AdminNotification';
 
 
 
@@ -261,6 +262,12 @@ function App() {
                 </ProtectedRoute>}
               />
 
+              <Route
+                path='/admin/notification'
+                element={<ProtectedRoute isAdmin={true}>
+                  <AdminNotification/>
+                </ProtectedRoute>}
+              />
             </Routes>
             <Footer />
           </HelmetProvider>

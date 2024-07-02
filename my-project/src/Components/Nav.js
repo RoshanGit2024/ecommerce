@@ -14,6 +14,9 @@ import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button'; 
 import logo from '../Assets/logo.png'
 import { FaHeart } from "react-icons/fa";
+import { CiLogout } from "react-icons/ci";
+import { RiFileUserLine } from "react-icons/ri";
+import { RxDashboard } from "react-icons/rx";
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -76,7 +79,7 @@ function Nav() {
                                                        '/admin/product/'
                                                        ])}  
                                   onClick={()=>{navigate('/admin/dashboard')}}>
-                                    Dashboard
+                                   <span className='mr-1'><RxDashboard/></span>Dashboard
                                   </Dropdown.Item>}
               <Dropdown.Item 
               className={isActive(['/myprofile',
@@ -85,16 +88,18 @@ function Nav() {
                                    '/myprofile/update/password',
                                    ])} 
               onClick={()=>{navigate('/myprofile')}}>
-                Profile
+              <span className='mr-1'><RiFileUserLine /></span>Profile
               </Dropdown.Item>
-              <Dropdown.Item className='text-danger' onClick={handleOpen}>Logout</Dropdown.Item>
+              <Dropdown.Item className='text-danger' onClick={handleOpen}><span className='mr-1'><CiLogout/></span>Logout</Dropdown.Item>
              </Dropdown.Menu>
          </Dropdown>
       )
       : 
     <Link to={'/login'} className="btn" id="login_btn">Login</Link>
     }
-    {isAuthenticated && <Link to={"/wishlist"} >
+    {isAuthenticated && <Link to={'/wishlist'} data-toggle="tooltip"
+                                        data-placement="bottom"
+                                        title='wish list'>
         <FaHeart 
           style={{
             color:'red',

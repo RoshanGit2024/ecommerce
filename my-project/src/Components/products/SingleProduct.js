@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createReview, getProduct } from '../../actions/productActions';
+import { createReview, getProduct, relatedProducts } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../Loader';
 import { Carousel, Modal } from 'react-bootstrap';
@@ -15,10 +15,12 @@ import { addWishlist } from '../../actions/wishlistActions'
 import { addToCartDatabase } from '../../actions/myCartActions';
 import { addToCart } from '../../slices/myCartSlice'
 import Errorcomp from '../Errorcomp'
+import { clearError as wishlistClearErr } from '../../slices/wishSlice';
 
 function SingleProduct() {
-    const { loading, product, error, isReviewSubmited } = useSelector((state) => state.prodSingleState);
-    const { items } = useSelector(state => state.wishState);
+    const { loading, product, error, isReviewSubmited, relatedProduct: suggested } = useSelector((state) => state.prodSingleState);
+    const { wishItems, loading:wishlistload, error:wishlisterr } = useSelector(state => state.wishState);
+    const { loading:cartLoad, error:cartErr} = useSelector(state => state.myCartState);
     const { user, isAuthenticated } = useSelector((state) => state.authState);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -30,17 +32,31 @@ function SingleProduct() {
     const [inWishlist, setInWishlist] = useState(false)
 
     useEffect(() => {
-        if (product && product._id && user && user._id) {
-            setInWishlist(items.some(item => item.product == product._id && item.userId == user._id))
+        if (product && product._id && user && user._id && wishItems ) {
+            let wishSts = wishItems.some(item => item.productId === product._id && item.userId === user._id)
+            setInWishlist(wishSts)
         }
-    }, [items, product, user])
-
+    }, [wishItems, product, user])
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleWish = () => {
-        dispatch(addWishlist(user._id, id))
+        if(user && user._id){
+            dispatch(addWishlist(user._id, product._id))
+        }else{
+            navigate('/login')
+        }
     }
+
+    useEffect(()=>{
+        if (wishlisterr) {
+            toast(wishlisterr, {
+                type: 'error',
+                onOpen: () => { dispatch(wishlistClearErr()) }
+            });
+            return
+        }
+    },[wishlisterr,])
 
     useEffect(() => {
         if (isReviewSubmited) {
@@ -58,6 +74,11 @@ function SingleProduct() {
         }
     }, [dispatch, id, isReviewSubmited]);
 
+    useEffect(() => {
+        dispatch(getProduct(id))
+        dispatch(relatedProducts(id))
+    }, [dispatch, id])
+
     const handleCart = () => {
         const cartItem = {
             name: product.name,
@@ -69,7 +90,6 @@ function SingleProduct() {
         };
         if (isAuthenticated) {
             dispatch(addToCartDatabase(user._id, cartItem));
-            console.log(cartItem)
         } else {
             dispatch(addToCart(cartItem));
         }
@@ -127,7 +147,7 @@ function SingleProduct() {
                                     >
                                         <FaHeart
                                             style={{
-                                                color: inWishlist ? 'red' : '',
+                                                color: inWishlist? 'red' : '',
                                                 cursor: 'pointer',
                                             }}
                                             size={40}
@@ -152,7 +172,7 @@ function SingleProduct() {
                                 <button type="button"
                                     id="cart_btn"
                                     className="btn btn-primary d-inline ml-4"
-                                    disabled={product.stock == 0 ? true : false}
+                                    disabled={product.stock == 0 || cartLoad}
                                     onClick={handleCart}>Add to Cart</button>
                                 <hr />
                                 <p>Status: <span id="stock_status text-success" className={product.stock > 0 ? 'text-success' : 'text-danger'} >{product.stock > 0 ? 'In stock' : 'Out of stock'}</span></p>
@@ -197,28 +217,36 @@ function SingleProduct() {
                     {product.reviews && product.reviews.length > 0 ?
                         <ProductReview reviews={product.reviews} /> : null
                     }
-                    <div className={`col-sm-12 col-md-6 col-lg-3 my-3`}>
-                        <div className="card p-3 rounded">
-                            <img
-                                className="card-img-top mx-auto"
-                                src=''
-                                alt='img'
-                            />
-                            <div className="card-body d-flex flex-column">
-                                <h5 className="card-title">
-                                    <a href=''>product</a>
-                                </h5>
-                                <div className="ratings mt-auto">
-                                    <div className="rating-outer">
-                                        <div className="rating-inner"></div>
+                    {suggested && suggested.length > 0 ? (
+                        <div>
+                        <h1 className="mx-5">Related products you may like</h1>
+                        <div className='row'>
+                            {suggested.map(item => (
+                                <div className="col-sm-12 col-md-6 col-lg-3 my-3 mx-5">
+                                    <div key={item._id} className="card p-3 rounded">
+                                        <img
+                                            className="card-img-top mx-auto"
+                                            src={item.images[0].image}
+                                            alt={item.name}
+                                        />
+                                        <div className="card-body d-flex flex-column">
+                                            <h5 className="card-title">
+                                                <Link to={`/singleproduct/${item._id}`}>{item.name}</Link>
+                                            </h5>
+                                            <div className="ratings mt-auto">
+                                                <div className="rating-outer">
+                                                    <div className="rating-inner" style={{ width: `${(item.ratings / 5) * 100}%` }}></div>
+                                                </div>
+                                                <span id="no_of_reviews">({item.numberOfreviews}Reviews)</span>
+                                            </div>
+                                            <p className="card-text">${item.price}</p>
+                                            <Link to={`/singleproduct/${item._id}`} id="view_btn" className="btn btn-block">View Details</Link>
+                                        </div>
                                     </div>
-                                    <span id="no_of_reviews">(Reviews)</span>
                                 </div>
-                                <p className="card-text">$100</p>
-                                <button id="view_btn" className="btn btn-block">View Details</button>
-                            </div>
+                            ))}
                         </div>
-                    </div>
+                        </div>) : (<div></div>)}
                 </Fragment>)
             }
         </Fragment>

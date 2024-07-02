@@ -5,14 +5,15 @@ class APIFeatures {
     }
 
     search(){
-       let keyword =  this.queryStr.keyword ? {
-            name: {
+        if(this.queryStr.keyword)  {
+          const keyword ={ name: {
                 $regex: this.queryStr.keyword,
                 $options: 'i' //check the uppper and lower case
             }
-       }: {};
+       };
 
-       this.query.find({...keyword})
+      this.query = this.query.find({...keyword})
+    }
        return this;
     }
 
@@ -35,7 +36,7 @@ class APIFeatures {
     paginate(resPerPage){
         const currentPage = Number(this.queryStr.page) || 1;
         const skip = resPerPage * (currentPage - 1)
-        this.query.limit(resPerPage).skip(skip);
+        this.query=this.query.limit(resPerPage).skip(skip);
         return this;
     }
 }

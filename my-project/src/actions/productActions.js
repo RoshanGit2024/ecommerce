@@ -26,7 +26,10 @@ import {  prodSingleRequest,
           reviewsFail, 
           deleteReviewRequest, 
           deleteReviewSuccess, 
-          deleteReviewFail 
+          deleteReviewFail, 
+          relatedProductRequest,
+          relatedProductSuccess,
+          relatedProductFail
         } from "../slices/productSlice";
 
 
@@ -34,8 +37,9 @@ export const getProducts = (keyword,price,category,rating,currentPage) => async 
     try {
         dispatch(productRequest());
         let link = `${process.env.REACT_APP_API_URL}/products?page=${currentPage}`;
+        let srchLink = `${process.env.REACT_APP_API_URL}/products`;
         if (keyword) {
-          link += `&keyword=${keyword}`;
+           link=`${process.env.REACT_APP_API_URL}/products?keyword=${keyword}`;
         }
         if (price) {
           link += `&price[gte]=${price[0]}&&price[lte]=${price[1]}`;
@@ -143,3 +147,14 @@ export const deleteReview =(productId,id)=> async (dispatch) => {
   }
 };
 
+export const relatedProducts =id=> async(dispatch)=>{
+  try{
+    dispatch(relatedProductRequest()) 
+    const {data}=await axios.get(`${process.env.REACT_APP_API_URL}/products/${id}/related`);
+    dispatch(relatedProductSuccess(data)) 
+  }catch(error){
+    dispatch(relatedProductFail(error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message))
+  }
+}
