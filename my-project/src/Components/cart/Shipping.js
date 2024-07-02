@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { countries } from 'countries-list'
-import { saveShippingInfo } from '../../slices/cartSlice'
+import { saveShippingInfo } from '../../slices/myCartSlice'
 import { useNavigate } from 'react-router-dom'
 import Steps from './Steps'
 import { toast } from 'react-toastify'

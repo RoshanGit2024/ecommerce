@@ -7,7 +7,6 @@ import 'react-router-dom'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import Cart from './Components/cart/Cart';
 import { HelmetProvider } from 'react-helmet-async'
 import ProductSearch from './Components/products/ProductSearch';
 import Login from './Components/user/Login';
@@ -90,11 +89,6 @@ function App() {
               <Route
                 path='/singleproduct/:id'
                 element={<SingleProduct />}
-              />
-
-              <Route
-                path='/cart'
-                element={<Cart />}
               />
 
               <Route

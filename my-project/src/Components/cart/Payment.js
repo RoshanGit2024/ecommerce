@@ -7,7 +7,7 @@ import { validateShipping } from './Shipping';
 import { createOrder } from '../../actions/orderActions'
 import axios from 'axios'
 import { toast } from 'react-toastify';
-import { orderCompleted } from '../../slices/cartSlice';
+import { orderCompleted } from '../../slices/myCartSlice';
 import Steps from './Steps';
 import { clearError as clearOrderError } from '../../slices/orderSlice'
 import Loader from '../Loader';
@@ -87,7 +87,7 @@ function Payment() {
                         id: result.paymentIntent.id,
                         status: result.paymentIntent.status
                     }
-                    dispatch(orderCompleted(user._id))
+                    dispatch(orderCompleted)
                     dispatch(createOrder(order))
                     //console.log(order)
                     navigate('/order/success')

@@ -37,9 +37,6 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     totalPrice,
     paymentInfo
   } = req.body;
-  if (orderItems.length === 0) {
-    return next(new ErrorHandler(`Order items do not exist`, 404));
-  }
   for (let item of orderItems) {
     const product = await productModel.findById(item.product);
 

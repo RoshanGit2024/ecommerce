@@ -17,7 +17,7 @@ const myCartSlice = createSlice({
     reducers: {
         addToCart(state, action) {
             const item = action.payload;
-            const existingItem = state.items.find(x => x.id == item.product);
+            const existingItem = state.items.find(x => x.product == item.product);
             if (existingItem) {
                 toast.error("item exist")
             } else {
@@ -78,6 +78,25 @@ const myCartSlice = createSlice({
         },
         clearError(state,action){
             state.error = null
+        },
+        saveShippingInfo(state,action){
+            localStorage.setItem('shippingInfo', JSON.stringify(action.payload));
+            return{
+                ...state,
+                shippingInfo:action.payload
+            }
+        },
+        orderCompleted(state,action){
+            //const userId = action.payload;
+            //const remainingItems = state.items.filter(item => item.userId !== userId);
+            //localStorage.setItem('cartItems',JSON.stringify(remainingItems));
+            localStorage.removeItem('shippingInfo');
+            localStorage.removeItem('orderInfo')
+            return{
+                ...state,
+                loading:false,
+                shippingInfo: {}
+            }
         }
     }
 })
@@ -94,7 +113,9 @@ export const {
     addCartToData,
     removeItemFromCart,
     clearCartDeleted,
-    clearError
+    clearError,
+    orderCompleted,
+    saveShippingInfo
 } = actions
 
 export default reducer

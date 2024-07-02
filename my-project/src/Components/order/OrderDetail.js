@@ -37,7 +37,8 @@ function OrderDetail() {
         });
         return
       }
-      },[isOrderCanceled,error,dispatch])
+      dispatch(orderDetailAction(id))
+      },[isOrderCanceled,error,dispatch,id])
 
 
     const handleCancelOrder = () => {
