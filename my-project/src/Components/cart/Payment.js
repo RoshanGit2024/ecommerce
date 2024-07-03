@@ -87,7 +87,7 @@ function Payment() {
                         id: result.paymentIntent.id,
                         status: result.paymentIntent.status
                     }
-                    dispatch(orderCompleted)
+                    dispatch(orderCompleted())
                     dispatch(createOrder(order))
                     //console.log(order)
                     navigate('/order/success')

@@ -87,9 +87,6 @@ const myCartSlice = createSlice({
             }
         },
         orderCompleted(state,action){
-            //const userId = action.payload;
-            //const remainingItems = state.items.filter(item => item.userId !== userId);
-            //localStorage.setItem('cartItems',JSON.stringify(remainingItems));
             localStorage.removeItem('shippingInfo');
             localStorage.removeItem('orderInfo')
             return{
