@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { createReview, getProduct, relatedProducts } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
+//import { deleteOrder, adminOrders as adminOrdersAction } from '../../actions/orderActions'
 import Loader from '../Loader';
 import { Carousel, Modal } from 'react-bootstrap';
 import 'slick-carousel/slick/slick.css';
@@ -16,11 +17,19 @@ import { addToCartDatabase } from '../../actions/myCartActions';
 import { addToCart } from '../../slices/myCartSlice'
 import Errorcomp from '../Errorcomp'
 import { clearError as wishlistClearErr } from '../../slices/wishSlice';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { FaXmark } from "react-icons/fa6";
+import Dialog from '@material-ui/core/Dialog';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { FaChevronRight } from "react-icons/fa";
 
 function SingleProduct() {
     const { loading, product, error, isReviewSubmited, relatedProduct: suggested } = useSelector((state) => state.prodSingleState);
-    const { wishItems, loading:wishlistload, error:wishlisterr } = useSelector(state => state.wishState);
-    const { loading:cartLoad, error:cartErr} = useSelector(state => state.myCartState);
+    const { wishItems, loading: wishlistload, error: wishlisterr } = useSelector(state => state.wishState);
+    const { loading: cartLoad, error: cartErr } = useSelector(state => state.myCartState);
     const { user, isAuthenticated } = useSelector((state) => state.authState);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -30,25 +39,51 @@ function SingleProduct() {
     const [rating, setRating] = useState(1);
     const [comment, setComment] = useState("");
     const [inWishlist, setInWishlist] = useState(false)
+    const [images, setImages] = useState([])
+    const [activeImg, setActiveImg] = useState("")
+    const [open, setOpen] = useState(false)
+    const [showAllImg, setShowAllImg] = useState(false)
+
+
+    const handleImageClose = () => {
+        setOpen(false)
+    }
+
+    const handleImageOpen = () => {
+        setOpen(true)
+    }
+
 
     useEffect(() => {
-        if (product && product._id && user && user._id && wishItems ) {
+        if (product && product.images) {
+            const imgUrls = product.images.map(img => img.image)
+            setImages(imgUrls)
+            console.log(images)
+            if (imgUrls.length > 0) {
+                setActiveImg(imgUrls[0]);
+                console.log(activeImg)
+            }
+        }
+    }, [product])
+    useEffect(() => {
+        if (product && product._id && user && user._id && wishItems) {
             let wishSts = wishItems.some(item => item.productId === product._id && item.userId === user._id)
             setInWishlist(wishSts)
         }
     }, [wishItems, product, user])
 
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const handleWish = () => {
-        if(user && user._id){
+        if (user && user._id) {
             dispatch(addWishlist(user._id, product._id))
-        }else{
+        } else {
             navigate('/login')
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (wishlisterr) {
             toast(wishlisterr, {
                 type: 'error',
@@ -56,7 +91,7 @@ function SingleProduct() {
             });
             return
         }
-    },[wishlisterr,])
+    }, [wishlisterr,])
 
     useEffect(() => {
         if (isReviewSubmited) {
@@ -116,6 +151,12 @@ function SingleProduct() {
         formData.append('productId', id);
         dispatch(createReview(formData));
     }
+    var settings = {
+        infinite: true,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+      };
     return (
         <Fragment>
             {loading ? (
@@ -128,13 +169,52 @@ function SingleProduct() {
                     <div className="container container-fluid">
                         <div className="row f-flex justify-content-around">
                             <div className="col-12 col-lg-5 img-fluid" id="product_image">
-                                <Carousel pause="hover">
-                                    {product.images && product.images.length > 0 && product.images.map(image => (
-                                        <Carousel.Item key={image._id}>
-                                            <img className='d-block w-100' src={image.image} alt={product.name} height="500" width="500" />
-                                        </Carousel.Item>
+                                {activeImg &&
+                                    <img
+                                        className='d-block w-100'
+                                        src={activeImg}
+                                        alt={product.name}
+                                        height="500"
+                                        width="500"
+                                        onClick={handleImageOpen}
+                                        style={{cursor:'pointer'}}
+                                    />}
+                                <div className="d-flex justify-content-center mt-2">
+                                    {images && images.length > 1 && images.slice(0,3).map((image, index) => (
+                                        <img key={index} src={image} alt={product.name}
+                                            className='w-16 h-16 rounded-md mx-1'
+                                            style={{
+                                                width: '65px',
+                                                height: '65px',
+                                                margin: '2px 8px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                border: activeImg === image ? '2px solid red' : '1px solid gray'
+                                            }}
+                                            onClick={() => setActiveImg(image)}
+                                        />
                                     ))}
-                                </Carousel>
+                                    {images.length > 3 && (
+                                        <div
+                                        className='w-16 h-16 rounded-md mx-1'
+                                        style={{
+                                            width: '65px',
+                                            background:'#D3D3D3',
+                                            height: '65px',
+                                            margin: '2px 8px',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            padding:'5px',
+                                            border:'1px solid black'
+                                        }}
+                                        onClick={handleImageOpen}
+                                    ><span 
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title='view more images'
+                                    ><FaChevronRight size={55}/></span></div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="col-12 col-lg-5 mt-5">
@@ -147,7 +227,7 @@ function SingleProduct() {
                                     >
                                         <FaHeart
                                             style={{
-                                                color: inWishlist? 'red' : '',
+                                                color: inWishlist ? 'red' : '',
                                                 cursor: 'pointer',
                                             }}
                                             size={40}
@@ -163,7 +243,9 @@ function SingleProduct() {
                                 <span id='no_of_reviews'>{product.numberOfreviews} Reviews</span>
                                 <hr />
                                 <p id="product_price">${product.price}</p>
-                                <p>Stocks: {product.stock}</p>
+                                <div>
+                                    <span className='rounded bg-dark p-1 text-white mb-2'>Stocks: {product.stock}</span>
+                                </div>
                                 <div className="stockCounter d-inline">
                                     <span className="btn btn-danger minus" onClick={decreaseQty} disabled={quantity == 1 ? true : false}>-</span>
                                     <input type="number" className="form-control count d-inline" value={quantity} readOnly />
@@ -173,7 +255,7 @@ function SingleProduct() {
                                     id="cart_btn"
                                     className="btn btn-primary d-inline ml-4"
                                     disabled={product.stock == 0 || cartLoad}
-                                    onClick={handleCart}>Add to Cart</button>
+                                    onClick={handleCart}>{cartLoad ? "Adding..." : "Add to cart"}</button>
                                 <hr />
                                 <p>Status: <span id="stock_status text-success" className={product.stock > 0 ? 'text-success' : 'text-danger'} >{product.stock > 0 ? 'In stock' : 'Out of stock'}</span></p>
                                 <hr />
@@ -219,38 +301,83 @@ function SingleProduct() {
                     }
                     {suggested && suggested.length > 0 ? (
                         <div>
-                        <h1 className="mx-5">Related products you may like</h1>
-                        <div className='row'>
-                            {suggested.map(item => (
-                                <div className="col-sm-12 col-md-6 col-lg-3 my-3 mx-5">
-                                    <div key={item._id} className="card p-3 rounded">
-                                        <img
-                                            className="card-img-top mx-auto"
-                                            src={item.images[0].image}
-                                            alt={item.name}
-                                        />
-                                        <div className="card-body d-flex flex-column">
-                                            <h5 className="card-title">
-                                                <Link to={`/singleproduct/${item._id}`}>{item.name}</Link>
-                                            </h5>
-                                            <div className="ratings mt-auto">
-                                                <div className="rating-outer">
-                                                    <div className="rating-inner" style={{ width: `${(item.ratings / 5) * 100}%` }}></div>
+                            <h1 className="mx-5">Related products you may like</h1>
+                            <div className='row'>
+                                {suggested.map(item => (
+                                    <div className="col-sm-12 col-md-6 col-lg-3 my-3 mx-5">
+                                        <div key={item._id} className="card p-3 rounded">
+                                            <img
+                                                className="card-img-top mx-auto"
+                                                src={item.images[0].image}
+                                                alt={item.name}
+                                            />
+                                            <div className="card-body d-flex flex-column">
+                                                <h5 className="card-title">
+                                                    <Link to={`/singleproduct/${item._id}`}>{item.name}</Link>
+                                                </h5>
+                                                <div className="ratings mt-auto">
+                                                    <div className="rating-outer">
+                                                        <div className="rating-inner" style={{ width: `${(item.ratings / 5) * 100}%` }}></div>
+                                                    </div>
+                                                    <span id="no_of_reviews">({item.numberOfreviews}Reviews)</span>
                                                 </div>
-                                                <span id="no_of_reviews">({item.numberOfreviews}Reviews)</span>
+                                                <p className="card-text">${item.price}</p>
+                                                <Link to={`/singleproduct/${item._id}`} id="view_btn" className="btn btn-block">View Details</Link>
                                             </div>
-                                            <p className="card-text">${item.price}</p>
-                                            <Link to={`/singleproduct/${item._id}`} id="view_btn" className="btn btn-block">View Details</Link>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
                         </div>) : (<div></div>)}
                 </Fragment>)
             }
+            <Dialog open={open} onClose={handleImageClose} maxWidth="md" fullWidth>
+                <DialogTitle>
+                    <div className='d-flex justify-content-between'>
+                    Image preview
+                    <FaXmark 
+                    onClick={handleImageClose}
+                    style={{cursor:'pointer'}}
+                    />
+                    </div>
+                </DialogTitle>
+                <DialogContent className='row f-flex justify-content-around'>
+                    <div className="d-flex justify-content-between" >
+                       <div>
+                        {activeImg &&
+                            <img
+                                //className='d-block '
+                                src={activeImg}
+                                alt={product.name}
+                                height="500"
+                                width="500"
+                            />}
+                        </div>
+                        <div className="d-flex justify-content-center mt-2">
+                            <div className='ml-4'>
+                            <h1>{product.name}</h1>
+                            {images && images.length > 1 && images.map((image, index) => (
+                                <img key={index} src={image} alt={product.name}
+                                    className='w-16 h-16 rounded-md mx-1'
+                                    style={{
+                                        width: '65px',
+                                        height: '65px',
+                                        margin: '2px 8px',
+                                        borderRadius: '4px',
+                                        cursor: 'pointer',
+                                        border: activeImg === image ? '2px solid red' : '1px solid black'
+                                    }}
+                                    onClick={() => setActiveImg(image)}
+                                />
+                            ))}
+                            </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
         </Fragment>
     )
+
 }
 
 export default SingleProduct;

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Sidebar from './Sidebar'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAdminProducts } from '../../actions/productActions'
@@ -13,9 +13,11 @@ function Dashboard() {
   const { products = [] } = useSelector(state => state.productState)
   const { users = [] } = useSelector(state => state.userState)
   const { adminOrders = [] } = useSelector(state => state.orderState)
+  //const[latestOrders,setLatestOrders]=useState({})
 
   const dispatch = useDispatch()
   let outOfStock = 0;
+  const todayDate = new Date().toString().split('T')[0];
 
   let totalAmount = 0
   if (adminOrders.length > 0) {
@@ -36,7 +38,7 @@ function Dashboard() {
     dispatch(getAdminProducts)
     dispatch(adminOrdersAction)
     dispatch(getUsers)
-  }, [])
+  }, [dispatch])
   return (
     <Fragment>
       <MetaData title={'Admin Dashboard'} />
@@ -101,7 +103,6 @@ function Dashboard() {
                 </Link>
               </div>
             </div>
-
 
             <div className="col-xl-3 col-sm-6 mb-3">
               <div className="card text-white bg-warning o-hidden h-100">

@@ -65,6 +65,7 @@ const orderSchema = new mongoose.Schema({
         },
 
     }],
+    reviewSubmited:{type:Boolean,default:false},
     itemPrice:{
         type:Number,
         required:true,

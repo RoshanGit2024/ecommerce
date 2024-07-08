@@ -29,7 +29,8 @@ import {  prodSingleRequest,
           deleteReviewFail, 
           relatedProductRequest,
           relatedProductSuccess,
-          relatedProductFail
+          relatedProductFail,
+          changeReviewSubmit
         } from "../slices/productSlice";
 
 

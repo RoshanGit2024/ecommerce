@@ -17,7 +17,7 @@ function OrderDetail() {
     const [show, setShow] = useState(false)
     const [selectOrderId, setSelectOrderId] = useState(null)
     const [reason, setReason] = useState('')
-    const[orderCnaceled,setOrderCanceled]=useState(false)
+    const[orderCaceled,setOrderCanceled]=useState(false)
 
     useEffect(() => {
         dispatch(orderDetailAction(id))

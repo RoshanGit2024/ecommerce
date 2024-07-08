@@ -106,8 +106,7 @@ function Login() {
                                 <Link to={'/register'} className="float-right mt-3">New User?</Link>
                             </form>
                         </Fragment>
-                    )
-                        : (
+                    ) : (
                             <form onSubmit={handleSubmit} className="shadow-lg">
                                 <h1 className="mb-3">Login</h1>
                                 <div className="form-group">

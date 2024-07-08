@@ -31,7 +31,7 @@ exports.loginUser = catchAsyncError(async(req,res,next)=>{
 
    if(!email || !password){
       return next(new ErrorHandler('please enter email & password',400))
-   }
+   }       
 
    //finding the user database
    const user =await User.findOne({email}).select('+password');
@@ -47,7 +47,7 @@ exports.loginUser = catchAsyncError(async(req,res,next)=>{
    sendToken(user,201,res)
 
 })
-
+                 
 //logout user
 exports.logoutUser=(req,res,next)=>{
    res.cookie('token',null,{

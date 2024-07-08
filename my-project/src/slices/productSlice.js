@@ -44,7 +44,7 @@ const productSlice = createSlice({
             return {
                 ...state,
                 loading: false,
-                isReviewSubmited:true
+                isReviewSubmited:true,
             }
         },
         createReviewFail(state, action) {
