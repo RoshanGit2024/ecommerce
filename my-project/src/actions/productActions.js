@@ -30,7 +30,10 @@ import {  prodSingleRequest,
           relatedProductRequest,
           relatedProductSuccess,
           relatedProductFail,
-          changeReviewSubmit
+          changeReviewSubmit,
+          deleteProdImageRequest,
+          deleteProdImageSuccess,
+          deleteProdImageFail
         } from "../slices/productSlice";
 
 
@@ -113,6 +116,16 @@ export const deleteProduct =id => async (dispatch) => {
       dispatch(deleteProductSuccess());
   } catch (error) {
       dispatch(deleteProductFail(error.response.data.message));
+  }
+};
+
+export const deleteProdImage =(id,imageUrl) => async (dispatch) => {
+  try {
+      dispatch(deleteProdImageRequest());
+      const {data} = await axios.delete(`${process.env.REACT_APP_API_URL}/admin/products/${id}/image`,imageUrl);
+      dispatch(deleteProdImageSuccess(data));
+  } catch (error) {
+      dispatch(deleteProdImageFail(error.response.data.message));
   }
 };
 

@@ -363,7 +363,7 @@ footer {
 }
 
 .avatar img {
-  width: 100%;
+  width: 120%;
   height: 100%;
   object-fit: cover;
 }
@@ -862,3 +862,27 @@ ul.CTAs a {
 .product-grid {
   padding-left: 20px;
 }
+
+/*avatar edit*/
+
+.avatar-container {
+  position: relative;
+  display: inline-block;
+}
+
+
+.edit-button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 50%;
+  padding: 4px;
+  /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); */
+  cursor: pointer;
+}
+
+/* .edit-button:hover {
+  background-color: white;
+} */

@@ -151,12 +151,9 @@ function SingleProduct() {
         formData.append('productId', id);
         dispatch(createReview(formData));
     }
-    var settings = {
-        infinite: true,
-        speed: 500,
-        slidesToShow: 3,
-        slidesToScroll: 1,
-      };
+    
+    const imagesLength = images && images.length - 3 > 5 ? '5+' : images.length - 3
+
     return (
         <Fragment>
             {loading ? (
@@ -177,10 +174,10 @@ function SingleProduct() {
                                         height="500"
                                         width="500"
                                         onClick={handleImageOpen}
-                                        style={{cursor:'pointer'}}
+                                        style={{ cursor: 'pointer' }}
                                     />}
                                 <div className="d-flex justify-content-center mt-2">
-                                    {images && images.length > 1 && images.slice(0,3).map((image, index) => (
+                                    {images && images.length > 1 && images.slice(0, 3).map((image, index) => (
                                         <img key={index} src={image} alt={product.name}
                                             className='w-16 h-16 rounded-md mx-1'
                                             style={{
@@ -196,23 +193,31 @@ function SingleProduct() {
                                     ))}
                                     {images.length > 3 && (
                                         <div
-                                        className='w-16 h-16 rounded-md mx-1'
-                                        style={{
-                                            width: '65px',
-                                            background:'#D3D3D3',
-                                            height: '65px',
-                                            margin: '2px 8px',
-                                            borderRadius: '4px',
-                                            cursor: 'pointer',
-                                            padding:'5px',
-                                            border:'1px solid black'
-                                        }}
-                                        onClick={handleImageOpen}
-                                    ><span 
-                                    data-toggle="tooltip"
-                                    data-placement="bottom"
-                                    title='view more images'
-                                    ><FaChevronRight size={55}/></span></div>
+                                            className='w-16 h-16 rounded-md mx-1'
+                                            style={{
+                                                width: '65px',
+                                                background: '#D3D3D3',
+                                                height: '65px',
+                                                margin: '2px 8px',
+                                                borderRadius: '4px',
+                                                cursor: 'pointer',
+                                                padding: '5px',
+                                                border: '1px solid black',
+                                                display:'flex',
+                                                alignItems:'center',
+                                                justifyContent:'center',
+                                                textAlign:'center'
+                                            }}
+                                            onClick={handleImageOpen}
+                                        ><span
+                                            data-toggle="tooltip"
+                                            data-placement="bottom"
+                                            title='view more images'
+                                            style={{
+                                                fontSize:'14px',
+                                                fontWeight:'bold'
+                                            }}
+                                        >view more {imagesLength} images</span></div>
                                     )}
                                 </div>
                             </div>
@@ -334,42 +339,42 @@ function SingleProduct() {
             <Dialog open={open} onClose={handleImageClose} maxWidth="md" fullWidth>
                 <DialogTitle>
                     <div className='d-flex justify-content-between'>
-                    Image preview
-                    <FaXmark 
-                    onClick={handleImageClose}
-                    style={{cursor:'pointer'}}
-                    />
+                        Image preview
+                        <FaXmark
+                            onClick={handleImageClose}
+                            style={{ cursor: 'pointer' }}
+                        />
                     </div>
                 </DialogTitle>
                 <DialogContent className='row f-flex justify-content-around'>
                     <div className="d-flex justify-content-between" >
-                       <div>
-                        {activeImg &&
-                            <img
-                                //className='d-block '
-                                src={activeImg}
-                                alt={product.name}
-                                height="500"
-                                width="500"
-                            />}
+                        <div>
+                            {activeImg &&
+                                <img
+                                    //className='d-block '
+                                    src={activeImg}
+                                    alt={product.name}
+                                    height="500"
+                                    width="500"
+                                />}
                         </div>
                         <div className="d-flex justify-content-center mt-2">
                             <div className='ml-4'>
-                            <h1>{product.name}</h1>
-                            {images && images.length > 1 && images.map((image, index) => (
-                                <img key={index} src={image} alt={product.name}
-                                    className='w-16 h-16 rounded-md mx-1'
-                                    style={{
-                                        width: '65px',
-                                        height: '65px',
-                                        margin: '2px 8px',
-                                        borderRadius: '4px',
-                                        cursor: 'pointer',
-                                        border: activeImg === image ? '2px solid red' : '1px solid black'
-                                    }}
-                                    onClick={() => setActiveImg(image)}
-                                />
-                            ))}
+                                <h1>{product.name}</h1>
+                                {images && images.length > 1 && images.map((image, index) => (
+                                    <img key={index} src={image} alt={product.name}
+                                        className='w-16 h-16 rounded-md mx-1'
+                                        style={{
+                                            width: '65px',
+                                            height: '65px',
+                                            margin: '2px 8px',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            border: activeImg === image ? '2px solid red' : '1px solid black'
+                                        }}
+                                        onClick={() => setActiveImg(image)}
+                                    />
+                                ))}
                             </div>
                         </div>
                     </div>

@@ -25,7 +25,7 @@ app.use(express.json())
 app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 app.use(bodyParser.json())
 app.use(cors({
-    origin: 'http://localhost:3000', // Frontend URL
+    origin: process.env.FRONTEND_URL, // Frontend URL
     credentials: true,
   }));
   

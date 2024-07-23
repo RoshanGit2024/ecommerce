@@ -23,7 +23,9 @@ import {
     forgotPasswordFail,
     resetPasswordRequest,
     resetPasswordSuccess,
-    resetPasswordFail
+    resetPasswordFail,
+    updateImageRequest,
+    updateImageSuccess
 } from "../slices/authSlice"
 import axios from 'axios'
 import { deleteUserFail, 
@@ -176,6 +178,23 @@ export const updateUser = (id,formData)=>async(dispatch)=>{
         await axios.put(`${process.env.REACT_APP_API_URL}/admin/user/${id}`,formData,config)
         dispatch(updateUserSuccess())
         toast.success("user details updated successfully")
+    } catch (error) {
+        dispatch(updateUserFail(error.response.data.message))
+    }
+}
+
+export const updateUserImage = (formData)=>async(dispatch)=>{
+
+    try {
+        dispatch(updateImageRequest())
+        const config = {
+            headers:{
+                'content-type':'multipart/form-data'
+            },
+            withCredentials: true,
+        }
+        const{data}=await axios.put(`${process.env.REACT_APP_API_URL}/updateimage`,formData,config)
+        dispatch(updateImageSuccess(data))
     } catch (error) {
         dispatch(updateUserFail(error.response.data.message))
     }

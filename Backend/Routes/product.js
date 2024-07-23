@@ -10,7 +10,8 @@ const {getAdminProducts,
        deleteReview,
        relatedProducts,
        toggleWish,
-       getWishList} = require('../controllers/productcontroller');
+       getWishList,
+       removeProductImage} = require('../controllers/productcontroller');
 const router=express.Router();
 const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticate')
 const multer = require('multer');
@@ -43,5 +44,6 @@ router.route('/admin/products/:id').delete(isAuthenticateUser, authorizeRoles('a
 router.route('/admin/products/:id').put(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), updateProduct)
 router.route('/admin/reviews').get(isAuthenticateUser, authorizeRoles('admin'),getReviews)
 router.route('/admin/review').delete(isAuthenticateUser, authorizeRoles('admin'),deleteReview)
+router.route('/admin/products/:id/image').delete(isAuthenticateUser, authorizeRoles('admin'),removeProductImage)
 
 module.exports=router

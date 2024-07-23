@@ -166,6 +166,28 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
     })
 })
 
+//removing product image - /api/v1/admin/products/:id/image
+exports.removeProductImage = catchAsyncError(async(req,res,next)=>{
+    const productId = req.params.id;
+    const{imageUrl}=req.body;
+
+    let product = await productModel.findById(productId)
+
+    if(!product){
+        return next(new ErrorHandler(`product not found`,404))
+    }
+    product.images = product.images.filter(img => img.image !== imageUrl)
+    if(imageUrl !== product.images.image){
+        return next(new ErrorHandler(`image not found`,404))
+    }
+    await product.save()
+
+    res.status(200).json({
+        success:true,
+        message:"product image removed successfully",
+        product
+    })
+}) 
 //Delete product - api/v1/products/:id
 exports.deleteProduct = async (req, res, next) => {
     const product = await productModel.findByIdAndDelete(req.params.id)

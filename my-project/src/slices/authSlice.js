@@ -4,7 +4,9 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         loading: false,
-        isAuthenticated:false
+        isAuthenticated:false,
+        isImageUpdated:false,
+        //error:null
     },
     reducers: {
         loginRequest(state, action) {
@@ -110,6 +112,28 @@ const authSlice = createSlice({
                 error: action.payload
             }
         },
+        updateImageRequest(state, action) {
+            return {
+                ...state,
+                loading:true,
+                isImageUpdated:false
+            }
+        },
+        updateImageSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                user:action.payload.user,
+                isImageUpdated:true
+            }
+        },
+        updateImageFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        },
         updatePasswordRequest(state, action) {
             return {
                 ...state,
@@ -200,6 +224,9 @@ export const { loginRequest,
                forgotPasswordSuccess,
                resetPasswordFail,
                resetPasswordRequest,
-               resetPasswordSuccess} = actions
+               resetPasswordSuccess,
+               updateImageFail,
+               updateImageRequest,
+               updateImageSuccess} = actions
 
 export default reducer

@@ -1,5 +1,6 @@
 const catchAsyncError = require('../middlewares/catchAsyncError');
 const User = require('../models/userModel');
+const sendBulkEmail = require('../utils/bulkMail');
 const sendEmail = require('../utils/Email');
 const ErrorHandler = require('../utils/errorHandler')
 const sendToken = require('../utils/jwt')
@@ -120,6 +121,50 @@ exports.changePassword = catchAsyncError(async(req,res,next)=>{
    user
   })
  })
+
+ //update user image
+
+ exports.updateUserImage = catchAsyncError(async(req,res,next)=>{
+   let avatar;
+   let BASE_URL = process.env.BACKEND_URL;
+
+   if(process.env.NODE_ENV === "production"){
+      BASE_URL = `${req.protocol}://${req.get('host')}`
+   }
+   if(req.file){
+      avatar = `${BASE_URL}/uploads/users/${req.file.originalname}`
+   }else{
+      return next(new ErrorHandler('No file uploaded', 400))
+   }
+   const user = await User.findByIdAndUpdate(
+      req.user.id,
+      {avatar},
+      {
+         new:true,
+         runValidators:true
+      }
+   );
+   res.status(200).json({
+      success:true,
+      user
+   })
+ })
+
+ //Delete user image
+
+ exports.deleteImage = catchAsyncError(async(req,res,next)=>{
+   
+   const user = await User.findById(req.user.id);
+   if(!user){
+      return next(new ErrorHandler('user not found', 404))
+   }
+   user.avatar = "";
+   await user.save()
+   res.status(200).json({
+      success:true,
+      user
+   })
+ })
  
 
  //get all users - api/v1/admin/users
@@ -145,6 +190,28 @@ exports.changePassword = catchAsyncError(async(req,res,next)=>{
    res.json({
       success:true,
       user
+   })
+ })
+  //send mail to user - /api/v1/admin/sendmail
+ exports.sendEmail = catchAsyncError(async(req,res,next)=>{
+   const{title,content}=req.body;
+   const users = await User.find({role:'user'})
+   if(!users){
+      return next(new ErrorHandler(`user not found with id:${req.params.id}`,400));
+   }
+   const message = content
+   const emailPromises = users.map((user)=>
+      sendBulkEmail({
+         fromemail:req.user.email,
+         email:user.email,
+         subject:title,
+         message
+        })
+   )
+   await Promise.all(emailPromises)
+   res.json({
+      success:true,
+      message:"email sent successfully..."
    })
  })
 
