@@ -34,9 +34,6 @@ router.route('/review').put(isAuthenticateUser,createReview)
 router.route('/togglewish').post(isAuthenticateUser,toggleWish)
 router.route('/wishlist/:userId').get(isAuthenticateUser,getWishList)
 
-
-
-
 //admin API
 router.route('/admin/products/new').post(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), postProducts)
 router.route('/admin/products').get(isAuthenticateUser, authorizeRoles('admin'), getAdminProducts)
