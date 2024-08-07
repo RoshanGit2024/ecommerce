@@ -129,6 +129,15 @@ function UserList() {
             </div>
             <div className="col-12 col-md-10">
                 <h1 className="my-4">Users list</h1>
+                <div className='row justify-content-center mt-5'>
+                    <div className='col-5'>
+                              <Link
+                              to={'/admin/send-mail'} 
+                              className='btn btn-primary btn-block py-2'>
+                                Send mail to users
+                              </Link>
+                    </div>
+                </div>
                  <Fragment>
                     {loading ? <Loader/>:
                     <Fragment>

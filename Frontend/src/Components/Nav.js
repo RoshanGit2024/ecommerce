@@ -3,20 +3,18 @@ import { FaShoppingCart } from 'react-icons/fa';
 import Search from './Search';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import{useDispatch, useSelector} from 'react-redux'
-import {Dropdown,Image} from 'react-bootstrap'
 import { logout } from '../actions/userActions';
-import Avatar from './user/Avatar';
-import DialogActions from '@material-ui/core/DialogActions'; 
-import DialogContent from '@material-ui/core/DialogContent'; 
-import DialogTitle from '@material-ui/core/DialogTitle'; 
-import DialogContentText from '@material-ui/core/DialogContentText'; 
-import Dialog from '@material-ui/core/Dialog'; 
-import Button from '@material-ui/core/Button'; 
+import Avatar from './user/Avatar'; 
 import logo from '../Assets/logo.png'
 import { FaHeart } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { RiFileUserLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
+import {CDropdown, CDropdownItem, CDropdownMenu, CDropdownToggle, CImage} from '@coreui/react'
+import { IoIosHelpCircleOutline } from "react-icons/io";
+import { GiClawHammer } from "react-icons/gi";
+import { MdContactPhone } from "react-icons/md";
+import AlertDialog from './alertModals/AlertDialog';
 
 function Nav() {
   const {isAuthenticated,user,resmessage}=useSelector(state => state.authState)
@@ -56,20 +54,21 @@ function Nav() {
       <Search />
     </div>
     
-    <div className="col-12 col-md-3 mt-4 ml-0 mt-md-0 text-center d-flex flex-row align-items-center justify-content-around">
+    <div className="col-12 col-md-3 mt-4 ml-0 mt-md-0 text-center d-flex flex-row align-items-center justify-content-end">
       {isAuthenticated ? (
-         <Dropdown className='d-inline '>
-             <Dropdown.Toggle variant='default text-white pr-5' id='dropdown-basic'>
+         <CDropdown className='d-inline '>
+             <CDropdownToggle variant='default text-white pr-5' id='dropdown-basic' caret={false}>
               <figure className='avatar avatar-nav'>
                 {user.avatar ? (
-                 <Image width={"50px"} src={user.avatar} alt={user.name}/>
+                 <CImage width={"50px"} src={user.avatar} alt={user.name} className='rounded-circle'/>
                 ):(
                   <Avatar name={user.name } size={40} fontSize={16}/>)}
               </figure>
-              <span className="username">{user.name}</span>
-             </Dropdown.Toggle>
-             <Dropdown.Menu>
-            {user.role === 'admin' && <Dropdown.Item 
+              {/* <span className="username">{user.name}</span> */}
+             </CDropdownToggle>
+             <CDropdownMenu>
+            {user.role === 'admin' && <CDropdownItem 
+                                  style={{cursor:'pointer'}}
                                   className={isActive(['/admin/dashboard',
                                                        '/admin/orders',
                                                        '/admin/products',
@@ -80,31 +79,51 @@ function Nav() {
                                                        ])}  
                                   onClick={()=>{navigate('/admin/dashboard')}}>
                                    <span className='mr-1'><RxDashboard/></span>Dashboard
-                                  </Dropdown.Item>}
-              <Dropdown.Item 
+                                  </CDropdownItem>}
+                                  {user.role === 'seller' && <CDropdownItem 
+                                  style={{cursor:'pointer'}}
+                                  className={isActive([])}  
+                                  onClick={()=>{navigate('/seller/company-profile/:id')}}>
+                                   <span className='mr-1'><RxDashboard/></span>your company
+                                  </CDropdownItem>}
+                                  {user.role === 'seller' && <CDropdownItem 
+                                  style={{cursor:'pointer'}}
+                                  className={isActive([])}  
+                                  onClick={()=>{navigate('/seller')}}>
+                                   <span className='mr-1'><RxDashboard/></span>Seller Dashboard
+                                  </CDropdownItem>}
+              <CDropdownItem 
               className={isActive(['/myprofile',
                                    '/myprofile/update',
                                    '/orders',
                                    '/myprofile/update/password',
                                    ])} 
-              onClick={()=>{navigate('/myprofile')}}>
+              onClick={()=>{navigate('/myprofile')}}  style={{cursor:'pointer'}}>
               <span className='mr-1'><RiFileUserLine /></span>Profile
-              </Dropdown.Item>
-              <Dropdown.Item className='text-danger' onClick={handleOpen}><span className='mr-1'><CiLogout/></span>Logout</Dropdown.Item>
-             </Dropdown.Menu>
-         </Dropdown>
+              </CDropdownItem>
+              <CDropdownItem className='text-danger' onClick={handleOpen}  style={{cursor:'pointer'}}><span className='mr-1'><CiLogout/></span>Logout</CDropdownItem>
+             </CDropdownMenu>
+         </CDropdown>
       )
       : 
     <Link to={'/login'} className="btn" id="login_btn">Login</Link>
     }
+         <CDropdown className='d-inline'>
+             <CDropdownToggle variant='default text-white pr-5' id='dropdown-basic' caret={false}>
+              <IoIosHelpCircleOutline size={30}/>
+             </CDropdownToggle>
+             <CDropdownMenu>
+              <CDropdownItem style={{cursor:'pointer'}}><span className='mr-1'><GiClawHammer/></span> Legal and policies</CDropdownItem>
+              <CDropdownItem style={{cursor:'pointer'}}><span className='mr-1'><MdContactPhone/></span> contact</CDropdownItem>
+             </CDropdownMenu>
+         </CDropdown>
     {isAuthenticated && <Link to={'/wishlist'} data-toggle="tooltip"
                                         data-placement="bottom"
-                                        title='wish list'>
+                                        title='wish list' className='ml-3'>
         <FaHeart 
           style={{
             color:'red',
-            cursor:'pointer',
-            marginTop:'11px'
+            cursor:'pointer'
         }}
         size={25}
         />
@@ -116,24 +135,13 @@ function Nav() {
         </span>
       </Link>
     </div>
-    <Dialog open={open} onClose={handleClose}>
-       <DialogTitle>
-         Please confirm
-       </DialogTitle>
-       <DialogContent> 
-          <DialogContentText> 
-            Are you sure want to logout? 
-          </DialogContentText> 
-      </DialogContent> 
-      <DialogActions> 
-          <Button onClick={handleClose} color="primary"> 
-           Close 
-          </Button> 
-          <Button onClick={handleLogout} style={{background:'red',color:'white',border:'none'}} autoFocus> 
-           Yes 
-          </Button> 
-      </DialogActions> 
-    </Dialog>
+
+    <AlertDialog
+    open = {open}
+    handleClose = {handleClose}
+    text = {"are you sure you wants to logout?"}
+    handleEvent = {handleLogout}
+    />
   </nav>
 );
 }

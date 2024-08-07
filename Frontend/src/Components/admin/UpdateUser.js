@@ -98,6 +98,8 @@ function UpdateUser() {
                       >
                         <option value="user">user</option>
                         <option value="admin">admin</option>
+                        <option value="seller">seller</option>
+                        <option value="customer support">customer support</option>
                       </select>
                     </div>
 

@@ -11,7 +11,9 @@ const {getAdminProducts,
        relatedProducts,
        toggleWish,
        getWishList,
-       removeProductImage} = require('../controllers/productcontroller');
+       removeProductImage,
+       shareToWhatsapp,
+       getLattestProducts} = require('../controllers/productcontroller');
 const router=express.Router();
 const {isAuthenticateUser, authorizeRoles} = require('../middlewares/authenticate')
 const multer = require('multer');
@@ -28,11 +30,13 @@ const upload = multer({storage: multer.diskStorage({
   
   
 router.route('/products').get(getProducts)
+router.route('/lattest-products').get(getLattestProducts)
 router.route('/products/:id').get(getSingleProducts)
 router.route('/products/:id/related').get(relatedProducts)
 router.route('/review').put(isAuthenticateUser,createReview)
 router.route('/togglewish').post(isAuthenticateUser,toggleWish)
 router.route('/wishlist/:userId').get(isAuthenticateUser,getWishList)
+router.route('/share-whatsapp/:id').get(isAuthenticateUser,shareToWhatsapp)
 
 //admin API
 router.route('/admin/products/new').post(isAuthenticateUser, authorizeRoles('admin'),upload.array('images'), postProducts)

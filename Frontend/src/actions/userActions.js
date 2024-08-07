@@ -28,7 +28,7 @@ import {
     updateImageSuccess
 } from "../slices/authSlice"
 import axios from 'axios'
-import { deleteUserFail, 
+import { bulkMailFail, bulkMailRequest, bulkMailSuccess, deleteUserFail, 
         deleteUserRequest, 
         deleteUserSuccess, 
         updateUserFail, 
@@ -232,5 +232,16 @@ export const resetPassword = (formData,token)=>async(dispatch)=>{
         dispatch(resetPasswordSuccess(data))
     } catch (error) {
         dispatch(resetPasswordFail(error.response.data.message))
+    }
+}
+
+export const bulkMail = (title,content)=>async(dispatch)=>{
+
+    try {
+        dispatch(bulkMailRequest())
+        const{data}=await axios.post(`${process.env.REACT_APP_API_URL}/admin/sendmail`,{title,content})
+        dispatch(bulkMailSuccess(data))
+    } catch (error) {
+        dispatch(bulkMailFail(error.response.data.message))
     }
 }

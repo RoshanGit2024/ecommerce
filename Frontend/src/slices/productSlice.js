@@ -5,6 +5,7 @@ const productSlice = createSlice({
     initialState: {
         loading: false,
         product:{},
+        sharedUrl:'',
         relatedProduct:{},
         isReviewSubmited:false,
         isProductCreated:false,
@@ -12,7 +13,8 @@ const productSlice = createSlice({
         isProductUpdated:false,
         isReviewDeleted:false,
         isProdImageDeleted:false,
-        review:[]
+        review:[],
+        shareError:null
     },
     reducers: {
         prodSingleRequest(state, action) {
@@ -247,6 +249,26 @@ const productSlice = createSlice({
              ...state,
              isProdImageDeleted:false
            }
+        },
+        shareWhatsappRequest(state, action) {
+            return {
+                ...state,
+                loading: true,
+            }
+        },
+        shareWhatsappSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                sharedUrl: action.payload.sharedUrl
+            }
+        },
+        shareWhatsappFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                shareError: action.payload
+            }
         }
     }
 });
@@ -286,6 +308,10 @@ export const { prodSingleRequest,
                deleteProdImageFail,
                deleteProdImageRequest,
                deleteProdImageSuccess,
-               clearImagedeleted} = actions
+               clearImagedeleted,
+               shareWhatsappFail,
+               shareWhatsappRequest,
+               shareWhatsappSuccess
+            } = actions
 
 export default reducer

@@ -7,7 +7,8 @@ const userSlice = createSlice({
         user:{},
         users:[],
         isUserUpdated:false,
-        isUserDeleted:false
+        isUserDeleted:false,
+        bulkMailSent:false
     },
     reducers: {
         usersRequest(state, action) {
@@ -102,6 +103,32 @@ const userSlice = createSlice({
                 isUserUpdated:false
             }
         },
+        bulkMailRequest(state, action) {
+            return {
+                ...state,
+                loading: true,
+            }
+        },
+        bulkMailSuccess(state, action) {
+            return {
+                ...state,
+                loading: false,
+                bulkMailSent:true
+            }
+        },
+        bulkMailFail(state, action) {
+            return {
+                ...state,
+                loading: false,
+                error:action.payload
+            }
+        },
+        clearBulkMailsend(state,action){
+            return {
+                ...state,
+                bulkMailSent:false
+            }
+        },
         clearError(state,action){
            return{
              ...state,
@@ -127,7 +154,11 @@ export const {
        deleteUserSuccess,
        clearError,
        clearUserDeleted,
-       clearUserUpdated
+       clearUserUpdated,
+       bulkMailFail,
+       bulkMailRequest,
+       bulkMailSuccess,
+       clearBulkMailsend
          } = actions
 
 export default reducer

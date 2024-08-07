@@ -103,7 +103,19 @@ exports.getSigleOrder = catchAsyncError(async (req, res, next) => {
   })
 })
 
+//get today order - /api/v1/admin/orders/today
+exports.getTodayOrder = catchAsyncError(async (req, res, next) => {
+  const startOfDay = new Date()
+  startOfDay.setHours(0,0,0,0);
+  const orderToday = await orderModel.find({
+    createdAt:{$gte:startOfDay}
+  })
+  res.status(200).json({
+    orderToday
+  })
+})
 
+//get my orders - /api/v1/myOrders
 exports.myOrders = catchAsyncError(async (req, res, next) => {
   const orders = await orderModel.find({ user: req.user.id })
 

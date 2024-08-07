@@ -42,6 +42,10 @@ import UserWishlist from './Components/user/UserWishlist';
 import MyCart from './Components/cart/MyCart';
 import SingleProduct from './Components/products/SingleProduct';
 import AdminNotification from './Components/admin/AdminNotification';
+import SendMail from './Components/admin/SendMail';
+import SellerDashboard from './Components/seller/SellerDashboard';
+import SellerProfile from './Components/seller/SellerProfile';
+import Chat from './Components/seller/ChatComponents/Chat';
 
 
 
@@ -262,7 +266,38 @@ function App() {
                   <AdminNotification/>
                 </ProtectedRoute>}
               />
+
+              <Route
+                path='/admin/send-mail'
+                element={<ProtectedRoute isAdmin={true}>
+                  <SendMail/>
+                </ProtectedRoute>}
+              />
             </Routes>
+
+               {/* seller route */}
+               <Routes>
+               <Route
+                path='/seller'
+                element={<ProtectedRoute isSeller={true}>
+                  <SellerDashboard/>
+                </ProtectedRoute>}
+              />
+
+              <Route
+                path='/seller/company-profile/:id'
+                element={<ProtectedRoute isSeller={true}>
+                  <SellerProfile/>
+                </ProtectedRoute>}
+              />
+
+              <Route
+                path='/sellers/chat'
+                element={<ProtectedRoute isSeller={true}>
+                  <Chat/>
+                </ProtectedRoute>}
+              />
+               </Routes>
             <Footer />
           </HelmetProvider>
         </div>

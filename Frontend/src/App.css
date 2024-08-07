@@ -521,8 +521,8 @@ footer {
   align-items: stretch;
   min-height: 100vh;
   font-weight: normal;
-
   margin-top: 0;
+  margin-bottom: 0;
   height: 100%;
   left: 0;
   top: 0;
@@ -885,4 +885,143 @@ ul.CTAs a {
 
 /* .edit-button:hover {
   background-color: white;
+} */
+
+.latest-orders {
+  position: absolute;
+  left: 0;
+  width: 500px; 
+  padding: 10px;
+  background-color: #fff; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2px; 
+}
+
+.table-container {
+  max-height: 200px; 
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none; 
+}
+
+.order-table {
+  width: 500px;
+  border-collapse: collapse;
+}
+
+.order-table th, .order-table td {
+  text-align: left;
+  padding: 8px;
+  color: #999; /* Light color for text */
+}
+
+.order-table th {
+  background-color: #f2f2f2; /* Optional: Different background for header */
+}
+
+.order-table tr:nth-child(even) {
+  background-color: #f9f9f9; /* Optional: Zebra stripe rows */
+}
+.order-image {
+  width: 40px; /* Adjust the width as needed */
+  height: 40px; /* Adjust the height as needed */
+  object-fit: cover;
+  border-radius: 4px; /* Optional: For rounded corners */
+}
+/* company profile styles */
+.company-profile {
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: auto;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.profile-header h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.profile-header .company-description {
+  font-size: 16px;
+  color: #666;
+}
+
+.followers-count {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.followers-count .count {
+  font-weight: bold;
+  font-size: 24px;
+  color: #007bff;
+}
+
+/* chat room */
+/* .chat-container {
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #f8f9fa;
+  padding: 2rem 0;
+}
+
+.chat-box {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #94a3b8;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.message-left, .message-right {
+  max-width: 300px;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.message-left {
+  background-color: #fff;
+  align-self: flex-start;
+}
+
+.message-right {
+  background-color: #000;
+  color: #fff;
+  align-self: flex-end;
+}
+
+.input-group {
+  margin-top: auto;
+  padding: 0 1rem;
+}
+
+.user-info {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.user-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.user-info strong {
+  font-size: 1.1rem;
 } */

@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
+const crypto = require('crypto');
+const validatePassword = require('../utils/validatePassword');
 
 
 const userSchema = new mongoose.Schema({
@@ -19,8 +20,12 @@ const userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:[true,'please enter password'],
-        maxlength:[6,'password cannot exceed 6 charecter'],
-        select:false
+        maxlength:[8,'password cannot exceed 8 charecter'],
+        select:false,
+        validate:{
+            validator:validatePassword,
+            message: 'Invalid password. Must contain at least one special character and one uppercase letter.'
+        }
     },
     avatar:{
         type:String

@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { createReview, getProduct, relatedProducts } from '../../actions/productActions';
+import { createReview, getProduct, relatedProducts, shareWhatsapp } from '../../actions/productActions';
 import { useDispatch, useSelector } from 'react-redux';
 //import { deleteOrder, adminOrders as adminOrdersAction } from '../../actions/orderActions'
 import Loader from '../Loader';
@@ -21,13 +21,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { FaXmark } from "react-icons/fa6";
 import Dialog from '@material-ui/core/Dialog';
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaChevronRight } from "react-icons/fa";
+import { FaShareAlt } from "react-icons/fa";
+import { IoLogoWhatsapp } from "react-icons/io";
+import { CiMail } from "react-icons/ci";
 
 function SingleProduct() {
-    const { loading, product, error, isReviewSubmited, relatedProduct: suggested } = useSelector((state) => state.prodSingleState);
+    const { loading, product, error, isReviewSubmited, relatedProduct: suggested, sharedUrl, shareError } = useSelector((state) => state.prodSingleState);
     const { wishItems, loading: wishlistload, error: wishlisterr } = useSelector(state => state.wishState);
     const { loading: cartLoad, error: cartErr } = useSelector(state => state.myCartState);
     const { user, isAuthenticated } = useSelector((state) => state.authState);
@@ -42,7 +43,7 @@ function SingleProduct() {
     const [images, setImages] = useState([])
     const [activeImg, setActiveImg] = useState("")
     const [open, setOpen] = useState(false)
-    const [showAllImg, setShowAllImg] = useState(false)
+    const [openShare, setShare] = useState(false)
 
 
     const handleImageClose = () => {
@@ -112,6 +113,7 @@ function SingleProduct() {
     useEffect(() => {
         dispatch(getProduct(id))
         dispatch(relatedProducts(id))
+        dispatch(shareWhatsapp(id))
     }, [dispatch, id])
 
     const handleCart = () => {
@@ -151,7 +153,10 @@ function SingleProduct() {
         formData.append('productId', id);
         dispatch(createReview(formData));
     }
-    
+
+    const handleShare = (prod_id)=>{
+        dispatch(shareWhatsapp(prod_id))
+    }
     const imagesLength = images && images.length - 3 > 5 ? '5+' : images.length - 3
 
     return (
@@ -203,10 +208,10 @@ function SingleProduct() {
                                                 cursor: 'pointer',
                                                 padding: '5px',
                                                 border: '1px solid black',
-                                                display:'flex',
-                                                alignItems:'center',
-                                                justifyContent:'center',
-                                                textAlign:'center'
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                textAlign: 'center'
                                             }}
                                             onClick={handleImageOpen}
                                         ><span
@@ -214,8 +219,8 @@ function SingleProduct() {
                                             data-placement="bottom"
                                             title='view more images'
                                             style={{
-                                                fontSize:'14px',
-                                                fontWeight:'bold'
+                                                fontSize: '14px',
+                                                fontWeight: 'bold'
                                             }}
                                         >view more {imagesLength} images</span></div>
                                     )}
@@ -225,20 +230,38 @@ function SingleProduct() {
                             <div className="col-12 col-lg-5 mt-5">
                                 <div className='d-flex justify-content-between'>
                                     <h3>{product.name}</h3>
-                                    {isAuthenticated && <span
-                                        data-toggle="tooltip"
-                                        data-placement="bottom"
-                                        title={`${!inWishlist ? 'add to wishlist' : 'remove from wish list'}`}
-                                    >
-                                        <FaHeart
-                                            style={{
-                                                color: inWishlist ? 'red' : '',
-                                                cursor: 'pointer',
-                                            }}
-                                            size={40}
-                                            onClick={handleWish}
-                                        />
-                                    </span>}
+                                    {isAuthenticated &&
+                                        <div className='d-flex justify-content-between'>
+                                            <span
+                                                data-toggle="tooltip"
+                                                data-placement="bottom"
+                                                title="Share product"
+                                            >
+                                                <FaShareAlt
+                                                    onClick={() => setShare(true)}
+                                                    size={40}
+                                                    style={{
+                                                        marginRight: '2rem',
+                                                        cursor: 'pointer'
+                                                    }} />
+                                            </span>
+                                            <span
+                                                data-toggle="tooltip"
+                                                data-placement="bottom"
+                                                title={`${!inWishlist ? 'add to wishlist' : 'remove from wish list'}`}
+                                            >
+
+                                                <FaHeart
+                                                    style={{
+                                                        color: inWishlist ? 'red' : 'gray',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                    size={40}
+                                                    onClick={handleWish}
+                                                />
+                                            </span>
+                                        </div>
+                                    }
                                 </div>
                                 <p id="product_id">Product # {product._id}</p>
                                 <hr />
@@ -376,6 +399,52 @@ function SingleProduct() {
                                     />
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={openShare} onClose={() => setShare(false)}>
+                <DialogTitle>
+                    <div className='d-flex justify-content-between'>
+                        To where you want to share
+                        <FaXmark
+                            onClick={() => setShare(false)}
+                            style={{
+                                cursor: 'pointer',
+                                marginLeft: '2rem',
+                                marginTop: '0.5rem'
+                            }}
+                        />
+                    </div>
+                </DialogTitle>
+                <DialogContent className='row f-flex justify-content-around'>
+                    <a href={sharedUrl} target='_blank' style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}><div className="d-flex flex-column mb-3" >
+                        <IoLogoWhatsapp
+                            onClick={() => handleShare(product._id)}
+                            size={40}
+                            style={{
+                                color: 'green',
+                                cursor: 'pointer',
+                                marginLeft: '0.5rem'
+                            }}
+                        />
+                        <div className='mt-2 mr-1'>
+                            <span className='font-weight-bold'>Whatsapp</span>
+                        </div>
+                    </div></a>
+
+                    <div className="d-flex flex-column" >
+                        <CiMail
+                            size={40}
+                            style={{
+                                color: 'blue',
+                                cursor: 'pointer',
+                                marginRight: '0.5rem'
+                            }}
+                        />
+                        <div className='mt-2 ml-1'>
+                            <span className='font-weight-bold'>Mail</span>
                         </div>
                     </div>
                 </DialogContent>

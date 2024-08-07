@@ -33,7 +33,10 @@ import {  prodSingleRequest,
           changeReviewSubmit,
           deleteProdImageRequest,
           deleteProdImageSuccess,
-          deleteProdImageFail
+          deleteProdImageFail,
+          shareWhatsappRequest,
+          shareWhatsappSuccess,
+          shareWhatsappFail
         } from "../slices/productSlice";
 
 
@@ -168,6 +171,18 @@ export const relatedProducts =id=> async(dispatch)=>{
     dispatch(relatedProductSuccess(data)) 
   }catch(error){
     dispatch(relatedProductFail(error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message))
+  }
+}
+
+export const shareWhatsapp =id=> async(dispatch)=>{
+  try{
+    dispatch(shareWhatsappRequest()) 
+    const {data}=await axios.get(`${process.env.REACT_APP_API_URL}/share-whatsapp/${id}`);
+    dispatch(shareWhatsappSuccess(data)) 
+  }catch(error){
+    dispatch(shareWhatsappFail(error.response && error.response.data.message
       ? error.response.data.message
       : error.message))
   }

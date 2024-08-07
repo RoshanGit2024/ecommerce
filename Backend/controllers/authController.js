@@ -7,7 +7,7 @@ const sendToken = require('../utils/jwt')
 const crypto = require('crypto')
 
 exports.registerUser = catchAsyncError(async(req,res,next)=>{
-   const{name,email,password}= req.body
+   try{const{name,email,password}= req.body
 
    let avatar;
    let BASE_URL = process.env.BACKEND_URL;
@@ -25,6 +25,12 @@ exports.registerUser = catchAsyncError(async(req,res,next)=>{
    })
 
    sendToken(user,201,res)
+   }catch(error){
+      if(error.name === 'ValidationError'){
+         return res.status(400).send({ error: error.message });
+      }
+      res.status(500).send({ error: 'Internal server error' });
+   }
 })
 
 exports.loginUser = catchAsyncError(async(req,res,next)=>{
@@ -198,6 +204,9 @@ exports.changePassword = catchAsyncError(async(req,res,next)=>{
    const users = await User.find({role:'user'})
    if(!users){
       return next(new ErrorHandler(`user not found with id:${req.params.id}`,400));
+   }
+   if(!title && content){
+      return next(new ErrorHandler(`please enter content and title`,400));
    }
    const message = content
    const emailPromises = users.map((user)=>

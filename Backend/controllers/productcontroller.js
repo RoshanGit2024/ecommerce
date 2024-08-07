@@ -40,6 +40,23 @@ exports.getProducts = catchAsyncError(async (req, res, next) => {
     })
 })
 
+//lettest products API = api/v1/lattest-products
+exports.getLattestProducts = catchAsyncError(async (req, res, next) => {
+    const fiveDaysAgo = new Date()
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate()-5)
+    
+    const lattestProducts = await productModel.find(
+       {
+        createAt:{$gte:fiveDaysAgo}
+       }
+    )
+
+    res.json({
+        lattestProducts 
+    })
+})
+
+
 //get single products API = api/v1/products/:id
 exports.getSingleProducts = catchAsyncError(async (req, res, next) => {
     const product = await productModel.findById(req.params.id).populate('reviews.user', 'name email avatar')
@@ -73,7 +90,7 @@ exports.postProducts = catchAsyncError(async (req, res, next) => {
     if (process.env.NODE_ENV === "production") {
         BASE_URL = `${req.protocol}://${req.get('host')}`
     }
-    if (req.files.length > 0) {
+    if (req.files&&req.files.length > 0) {
         req.files.forEach(file => {
             let url = `${BASE_URL}/uploads/products/${file.originalname}`;
             images.push({ image: url })
@@ -354,4 +371,19 @@ exports.getWishList = catchAsyncError(async (req, res,next) => {
             success:true,
             wishprods:wishlist.wishProducts
         })
+});
+
+//whatsapp sharing api - /api/v1/share-whatsapp/:id
+exports.shareToWhatsapp = catchAsyncError(async (req, res,next) => {
+    const productId = req.params.id;
+    const product = await productModel.findById(productId)
+    if(!product){
+        return next(new ErrorHandler(`product not found`,404))
+    }
+    let BASE_URL = process.env.FRONTEND_URL;
+    const message = encodeURIComponent(`${BASE_URL}/singleproduct/${productId}`)
+    const sharedUrl = `https://api.whatsapp.com/send?text=${message}`
+    res.status(200).json({
+        sharedUrl
+    }) 
 });
