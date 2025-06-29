@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser')
 const errorMiddleware = require('../middlewares/error')
 const connectDatabase=require('../config/connectDatabase')
 const serverless = require('serverless-http');
-dotenv.config({path:path.join(__dirname,'config','config.env')})
+dotenv.config(); 
 
 
 const products=require('../Routes/product');
@@ -23,7 +23,7 @@ const cart=require('../Routes/cart')
    connectDatabase()
 
 app.use(express.json())
-app.use('/uploads',express.static(path.join(__dirname,'uploads')))
+// app.use('/uploads',express.static(path.join(__dirname,'uploads')))
 app.use(bodyParser.json())
 app.use(cors({
     origin: process.env.FRONTEND_URL, // Frontend URL
@@ -56,3 +56,8 @@ process.on('uncaughtException',(err)=>{
         process.exit(1)
     })
 })
+
+app.use((err, req, res, next) => {
+  console.error("UNCAUGHT ERROR", err);
+  res.status(500).json({ error: err.message });
+});
