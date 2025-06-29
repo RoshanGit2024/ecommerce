@@ -7,6 +7,7 @@ const bodyParser=require('body-parser')
 const cookieParser = require('cookie-parser')
 const errorMiddleware = require('./middlewares/error')
 const connectDatabase=require('./config/connectDatabase')
+const serverless = require('serverless-http');
 dotenv.config({path:path.join(__dirname,'config','config.env')})
 
 
@@ -35,7 +36,7 @@ app.use('/api/v1/',orders);
 app.use('/api/v1/',payment);
 app.use('/api/v1/',cart);
 app.use(errorMiddleware)
-
+module.exports = serverless(app);
 const server = app.listen(process.env.PORT,()=>{
     console.log(`server is listening port ${process.env.PORT} in ${process.env.NODE_ENV}`)
 })
