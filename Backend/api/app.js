@@ -5,17 +5,17 @@ const path=require('path')
 const cors = require('cors')
 const bodyParser=require('body-parser')
 const cookieParser = require('cookie-parser')
-const errorMiddleware = require('./middlewares/error')
-const connectDatabase=require('./config/connectDatabase')
+const errorMiddleware = require('../middlewares/error')
+const connectDatabase=require('../config/connectDatabase')
 const serverless = require('serverless-http');
 dotenv.config({path:path.join(__dirname,'config','config.env')})
 
 
-const products=require('./Routes/product');
-const auth = require('./Routes/auth')
-const orders=require('./Routes/order');
-const payment=require('./Routes/payment')
-const cart=require('./Routes/cart')
+const products=require('../Routes/product');
+const auth = require('../Routes/auth')
+const orders=require('../Routes/order');
+const payment=require('../Routes/payment')
+const cart=require('../Routes/cart')
 
   
   
@@ -37,9 +37,9 @@ app.use('/api/v1/',payment);
 app.use('/api/v1/',cart);
 app.use(errorMiddleware)
 module.exports = serverless(app);
-const server = app.listen(process.env.PORT,()=>{
-    console.log(`server is listening port ${process.env.PORT} in ${process.env.NODE_ENV}`)
-})
+// const server = app.listen(process.env.PORT,()=>{
+//     console.log(`server is listening port ${process.env.PORT} in ${process.env.NODE_ENV}`)
+// })
 
 process.on(`unhandledRejection`,(err)=>{
     console.log(`Error:${err.message}`);
